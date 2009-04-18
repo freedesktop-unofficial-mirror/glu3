@@ -22,3 +22,8 @@
 
 AUTOMAKE_OPTIONS = foreign
 SUBDIRS = src
+
+pkgconfigdir = $(libdir)/pkgconfig
+pkgconfig_DATA = glu3.pc
+
+EXTRA_DIST = glu3.pc.in
