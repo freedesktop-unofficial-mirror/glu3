@@ -21,5 +21,7 @@
 # USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 AM_CXXFLAGS=-I../include
+AM_CFLAGS=-I../include
+
 lib_LIBRARIES = libGLU3.a
 libGLU3_a_SOURCES = matrix.c
