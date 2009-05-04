@@ -28,16 +28,30 @@
 
 #define GLU_VERSION_3_0
 
+struct GLUmat4;
+
 struct GLUvec4 {
 	GLfloat values[4];
 
 #ifdef __cplusplus
+	inline GLUvec4(void)
+	{
+	}
+
 	inline GLUvec4(GLfloat x , GLfloat y, GLfloat z, GLfloat w)
 	{
 		values[0] = x;
 		values[1] = y;
 		values[2] = z;
 		values[3] = w;
+	}
+
+	inline GLUvec4(const GLUvec4 &v)
+	{
+		values[0] = v.values[0];
+		values[1] = v.values[1];
+		values[2] = v.values[2];
+		values[3] = v.values[3];
 	}
 
 	GLUvec4 operator *(const GLUmat4 &) const;
@@ -54,6 +68,10 @@ struct GLUmat4 {
 	struct GLUvec4 col[4];
 
 #ifdef __cplusplus
+	inline GLUmat4(void)
+	{
+	}
+
 	inline GLUmat4(const GLUvec4 & c0, const GLUvec4 & c1,
 		       const GLUvec4 & c2, const GLUvec4 & c3)
 	{
@@ -63,11 +81,20 @@ struct GLUmat4 {
 		col[3] = c3;
 	}
 
+	inline GLUmat4(const GLUmat4 &m)
+	{
+		col[0] = m.col[0];
+		col[1] = m.col[1];
+		col[2] = m.col[2];
+		col[3] = m.col[3];
+	}
+
+
 	GLUvec4 operator *(const GLUvec4 &) const;
 	GLUmat4 operator *(const GLUmat4 &) const;
 	GLUmat4 operator *(GLfloat) const;
 
-	GLUmat4 operator *(const GLUmat4 &) const;
+	GLUmat4 operator +(const GLUmat4 &) const;
 	GLUmat4 operator -(const GLUmat4 &) const;
 #endif	/* __cplusplus */
 };
@@ -93,15 +120,13 @@ typedef struct GLUmat4Stack GLUmat4Stack;
 #endif /*  __cplusplus */
 
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 GLfloat gluDot4_4v(const GLUvec4 *, const GLUvec4 *);
 GLfloat gluDot3_4v(const GLUvec4 *, const GLUvec4 *);
 GLfloat gluDot2_4v(const GLUvec4 *, const GLUvec4 *);
-
-#ifdef __cplusplus
-GLfloat gluDot4(const GLUvec4 &, const GLUvec4 &);
-GLfloat gluDot3(const GLUvec4 &, const GLUvec4 &);
-GLfloat gluDot2(const GLUvec4 &, const GLUvec4 &);
-#endif
 
 GLUvec4 gluCross4v(const GLUvec4 *, const GLUvec4 *);
 GLUvec4 gluNormalize4v(const GLUvec4 *);
@@ -109,12 +134,6 @@ GLfloat gluLength4v(const GLUvec4 *);
 GLfloat gluLengthSqr4v(const GLUvec4 *);
 GLUmat4 gluOuter4v(const GLUvec4 *, const GLUvec4 *);
 
-#ifdef __cplusplus
-GLUvec4 gluCross(const GLUvec4 &, const GLUvec4 &);
-GLUvec4 gluNormalize(const GLUvec4 &);
-GLfloat gluLength(const GLUvec4 &);
-GLfloat gluLengthSqr(const GLUvec4 &);
-#endif /* __cplusplus */
 
 GLUvec4 gluMult4v_4v(const GLUvec4 *, const GLUvec4 *);
 GLUvec4 gluDiv4v_4v(const GLUvec4 *, const GLUvec4 *);
@@ -133,8 +152,29 @@ GLUmat4 gluSub4m_4m(const GLUmat4 *, const GLUmat4 *);
 GLUmat4 gluMult4m_f(const GLUmat4 *, GLfloat);
 
 GLUmat4 gluScale4v(const GLUvec4 *);
+GLUmat4 gluTranslate3(GLfloat x, GLfloat y, GLfloat z);
 GLUmat4 gluTranslate4v(const GLUvec4 *);
-GLUmat4 gluLookAt(const GLUvec4 *, const GLUvec4 *, const GLUvec4 *);
+GLUmat4 gluRotate4v(const GLUvec4 *axis, GLfloat angle);
+GLUmat4 gluLookAt4v(const GLUvec4 *, const GLUvec4 *, const GLUvec4 *);
+GLUmat4 gluPerspective4(GLfloat fovy, GLfloat aspect, GLfloat near,
+			GLfloat far);
+
+extern const GLUmat4 gluIdentityMatrix;
+
+#ifdef __cplusplus
+};
+#endif
+
+#ifdef __cplusplus
+GLfloat gluDot4(const GLUvec4 &, const GLUvec4 &);
+GLfloat gluDot3(const GLUvec4 &, const GLUvec4 &);
+GLfloat gluDot2(const GLUvec4 &, const GLUvec4 &);
+
+GLUvec4 gluCross(const GLUvec4 &, const GLUvec4 &);
+GLUvec4 gluNormalize(const GLUvec4 &);
+GLfloat gluLength(const GLUvec4 &);
+GLfloat gluLengthSqr(const GLUvec4 &);
+#endif /* __cplusplus */
 
 #include "glu3_scalar.h"
 

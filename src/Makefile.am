@@ -25,3 +25,6 @@ AM_CFLAGS=-I../include
 
 lib_LIBRARIES = libGLU3.a
 libGLU3_a_SOURCES = matrix.c
+
+libGLU3includedir = ${includedir}
+libGLU3include_HEADERS = ../include/glu3.h ../include/glu3_scalar.h
