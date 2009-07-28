@@ -148,6 +148,7 @@ GLUvec4 gluSub4v_f(const GLUvec4 *, GLfloat);
 GLUmat4 gluMult4m_4m(const GLUmat4 *, const GLUmat4 *);
 GLUmat4 gluAdd4m_4m(const GLUmat4 *, const GLUmat4 *);
 GLUmat4 gluSub4m_4m(const GLUmat4 *, const GLUmat4 *);
+GLUvec4 gluMult4m_4v(const GLUmat4 *m, const GLUvec4 *v);
 
 GLUmat4 gluMult4m_f(const GLUmat4 *, GLfloat);
 
@@ -158,6 +159,7 @@ GLUmat4 gluRotate4v(const GLUvec4 *axis, GLfloat angle);
 GLUmat4 gluLookAt4v(const GLUvec4 *, const GLUvec4 *, const GLUvec4 *);
 GLUmat4 gluPerspective4(GLfloat fovy, GLfloat aspect, GLfloat near,
 			GLfloat far);
+GLUmat4 gluTranspose4(const GLUmat4 *m);
 
 extern const GLUmat4 gluIdentityMatrix;
 
