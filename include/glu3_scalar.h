@@ -143,6 +143,18 @@ extern inline GLUmat4 gluAdd4m_4m(const GLUmat4 *m1, const GLUmat4 *m2)
 	return result;
 }
 
+extern inline GLUmat4 gluSub4m_4m(const GLUmat4 *m1, const GLUmat4 *m2)
+{
+	GLUmat4 result;
+
+	result.col[0] = gluSub4v_4v(& m1->col[0], & m2->col[0]);
+	result.col[1] = gluSub4v_4v(& m1->col[1], & m2->col[1]);
+	result.col[2] = gluSub4v_4v(& m1->col[2], & m2->col[2]);
+	result.col[3] = gluSub4v_4v(& m1->col[3], & m2->col[3]);
+
+	return result;
+}
+
 extern inline GLfloat gluDot4_4v(const GLUvec4 *v1, const GLUvec4 *v2)
 {
 	return v1->values[0] * v2->values[0]
