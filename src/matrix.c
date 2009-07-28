@@ -36,53 +36,47 @@ const GLUmat4 gluIdentityMatrix = {
 };
 
 
-GLUmat4 gluTranslate4v(const GLUvec4 *t)
+void gluTranslate4v(GLUmat4 *result, const GLUvec4 *t)
 {
-	GLUmat4 result;
-
-	memcpy(& result, & gluIdentityMatrix, sizeof(gluIdentityMatrix));
-	result.col[3] = *t;
-	result.col[3].values[3] = 1.0f;
-
-	return result;
+	memcpy(result, & gluIdentityMatrix, sizeof(gluIdentityMatrix));
+	result->col[3] = *t;
+	result->col[3].values[3] = 1.0f;
 }
 
 
-GLUmat4 gluScale4v(const GLUvec4 *t)
+void gluScale4v(GLUmat4 *result, const GLUvec4 *t)
 {
-	GLUmat4 result;
-
-	memcpy(& result, & gluIdentityMatrix, sizeof(gluIdentityMatrix));
-	result.col[0].values[0] = t->values[0];
-	result.col[1].values[1] = t->values[1];
-	result.col[2].values[2] = t->values[2];
-
-	return result;
+	memcpy(result, & gluIdentityMatrix, sizeof(gluIdentityMatrix));
+	result->col[0].values[0] = t->values[0];
+	result->col[1].values[1] = t->values[1];
+	result->col[2].values[2] = t->values[2];
 }
 
 
-GLUmat4 gluLookAt4v(const GLUvec4 *eye,
-		    const GLUvec4 *center,
-		    const GLUvec4 *up)
+void gluLookAt4v(GLUmat4 *result,
+		 const GLUvec4 *eye,
+		 const GLUvec4 *center,
+		 const GLUvec4 *up)
 {
 	static const GLUvec4 col3 = { { 0.0f, 0.0f, 0.0f, 1.0f } };
 	const GLUvec4 e = { 
 		{ -eye->values[0], -eye->values[1], -eye->values[2], 0.0f }
 	};
-	const GLUmat4 translate = gluTranslate4v(& e);
+	GLUmat4  translate;
 	GLUmat4  rotate;
+	GLUmat4  rotateT;
 	GLUvec4  f;
 	GLUvec4  s;
 	GLUvec4  u;
 
 
-	f = gluSub4v_4v(center, eye);
-	f = gluNormalize4v(& f);
+	gluSub4v_4v(& f, center, eye);
+	gluNormalize4v(& f, & f);
 
-	u = gluNormalize4v(up);
+	gluNormalize4v(& u, up);
 
-	s =  gluCross4v(& f, & u);
-	u =  gluCross4v(& s, & f);
+	gluCross4v(& s, & f, & u);
+	gluCross4v(& u, & s, & f);
 
 	rotate.col[0] = s;
 	rotate.col[1] = u;
@@ -91,105 +85,90 @@ GLUmat4 gluLookAt4v(const GLUvec4 *eye,
 	rotate.col[2].values[2] = -f.values[2];
 	rotate.col[2].values[3] = 0.0f;
 	rotate.col[3] = col3;
-	rotate = gluTranspose4(& rotate);
+	gluTranspose4(& rotateT, & rotate);
 
-	return gluMult4m_4m(& rotate, & translate);
+	gluTranslate4v(& translate, & e);
+	gluMult4m_4m(result, & rotateT, & translate);
 }
 
 
-GLUmat4 gluRotate4v(const GLUvec4 *_axis, GLfloat angle)
+void gluRotate4v(GLUmat4 *result, const GLUvec4 *_axis, GLfloat angle)
 {
-#if 0
-	GLUvec4 axis = gluNormalize4v(_axis);
-	GLUmat4 E =  {
-		{
-			{ { 0.0f, -axis.values[2], axis.values[1], 0.0f } },
-			{ { axis.values[3], 0.0f, -axis.values[0], 0.0f } },
-			{ { -axis.values[1], axis.values[0], 0.0f, 0.0f } },
-			{ { 0.0f, 0.0f,             0.0f,            1.0f } }
-		}
-	};
-
-	const GLfloat cos_a = cos(angle);
-	const GLfloat sin_a = sin(angle);
-
-	GLUmat4 O = gluOuter4v(&axis, &axis);
-	const GLUmat4 I = gluMult4m_f(& gluIdentityMatrix, cos_a);
-	GLUmat4 temp;
-
-
-	E = gluMult4m_f(& E, -sin_a);
-	O = gluMult4m_f(& O, 1.0f - cos_a);
-
-	temp = gluAdd4m_4m(& I, & O);
-	return gluAdd4m_4m(& temp, & E);
-#else
-	GLUvec4 axis = gluNormalize4v(_axis);
-	GLUmat4 m;
+	GLUvec4 axis;
 	const float c = cos(angle);
 	const float s = sin(angle);
 	const float one_c = 1.0 - c;
 
-	const float xx = axis.values[0] * axis.values[0];
-	const float yy = axis.values[1] * axis.values[1];
-	const float zz = axis.values[2] * axis.values[2];
+	float xx;
+	float yy;
+	float zz;
 
-	const float xs = axis.values[0] * s;
-	const float ys = axis.values[1] * s;
-	const float zs = axis.values[2] * s;
+	float xs;
+	float ys;
+	float zs;
 
-	const float xy = axis.values[0] * axis.values[1];
-	const float xz = axis.values[0] * axis.values[2];
-	const float yz = axis.values[1] * axis.values[2];
-
-
-	m.col[0].values[0] = (one_c * xx) + c;
-	m.col[0].values[1] = (one_c * xy) + zs;
-	m.col[0].values[2] = (one_c * xz) - ys;
-	m.col[0].values[3] = 0.0;
-
-	m.col[1].values[0] = (one_c * xy) - zs;
-	m.col[1].values[1] = (one_c * yy) + c;
-	m.col[1].values[2] = (one_c * yz) + xs;
-	m.col[1].values[3] = 0.0;
+	float xy;
+	float xz;
+	float yz;
 
 
-	m.col[2].values[0] = (one_c * xz) + ys;
-	m.col[2].values[1] = (one_c * yz) - xs;
-	m.col[2].values[2] = (one_c * zz) + c;
-	m.col[2].values[3] = 0.0;
+	gluNormalize4v(& axis, _axis);
 
-	m.col[3].values[0] = 0.0;
-	m.col[3].values[1] = 0.0;
-	m.col[3].values[2] = 0.0;
-	m.col[3].values[3] = 1.0;
+	xx = axis.values[0] * axis.values[0];
+	yy = axis.values[1] * axis.values[1];
+	zz = axis.values[2] * axis.values[2];
 
-	return m;
-#endif
+	xs = axis.values[0] * s;
+	ys = axis.values[1] * s;
+	zs = axis.values[2] * s;
+
+	xy = axis.values[0] * axis.values[1];
+	xz = axis.values[0] * axis.values[2];
+	yz = axis.values[1] * axis.values[2];
+
+
+	result->col[0].values[0] = (one_c * xx) + c;
+	result->col[0].values[1] = (one_c * xy) + zs;
+	result->col[0].values[2] = (one_c * xz) - ys;
+	result->col[0].values[3] = 0.0;
+
+	result->col[1].values[0] = (one_c * xy) - zs;
+	result->col[1].values[1] = (one_c * yy) + c;
+	result->col[1].values[2] = (one_c * yz) + xs;
+	result->col[1].values[3] = 0.0;
+
+
+	result->col[2].values[0] = (one_c * xz) + ys;
+	result->col[2].values[1] = (one_c * yz) - xs;
+	result->col[2].values[2] = (one_c * zz) + c;
+	result->col[2].values[3] = 0.0;
+
+	result->col[3].values[0] = 0.0;
+	result->col[3].values[1] = 0.0;
+	result->col[3].values[2] = 0.0;
+	result->col[3].values[3] = 1.0;
 }
 
 
-GLUmat4
-gluPerspective4(GLfloat fovy, GLfloat aspect, GLfloat near, GLfloat far)
+void
+gluPerspective4(GLUmat4 *result,
+		GLfloat fovy, GLfloat aspect, GLfloat near, GLfloat far)
 {
-	GLUmat4 result;
 	const double sine = sin(DEG2RAD(fovy / 2.0));
 	const double cosine = cos(DEG2RAD(fovy / 2.0));
 	const double sine_aspect = sine * aspect;
 	const double dz = far - near;
 
 
-	memcpy(&result, &gluIdentityMatrix, sizeof(result));
+	memcpy(result, &gluIdentityMatrix, sizeof(gluIdentityMatrix));
 	if ((sine == 0.0) || (dz == 0.0) || (sine_aspect == 0.0)) {
-		return result;
+		return;
 	}
 
-	result.col[0].values[0] = cosine / sine_aspect;
-	result.col[1].values[1] = cosine / sine;
-	result.col[2].values[2] = -(far + near) / dz;
-	result.col[2].values[3] = -1.0;
-	result.col[3].values[2] = -2.0 * near * far / dz;
-	result.col[3].values[3] =  0.0;
-
-	return result;
+	result->col[0].values[0] = cosine / sine_aspect;
+	result->col[1].values[1] = cosine / sine;
+	result->col[2].values[2] = -(far + near) / dz;
+	result->col[2].values[3] = -1.0;
+	result->col[3].values[2] = -2.0 * near * far / dz;
+	result->col[3].values[3] =  0.0;
 }

@@ -128,39 +128,39 @@ GLfloat gluDot4_4v(const GLUvec4 *, const GLUvec4 *);
 GLfloat gluDot3_4v(const GLUvec4 *, const GLUvec4 *);
 GLfloat gluDot2_4v(const GLUvec4 *, const GLUvec4 *);
 
-GLUvec4 gluCross4v(const GLUvec4 *, const GLUvec4 *);
-GLUvec4 gluNormalize4v(const GLUvec4 *);
+void gluCross4v(GLUvec4 *result, const GLUvec4 *, const GLUvec4 *);
+void gluNormalize4v(GLUvec4 *result, const GLUvec4 *);
 GLfloat gluLength4v(const GLUvec4 *);
 GLfloat gluLengthSqr4v(const GLUvec4 *);
-GLUmat4 gluOuter4v(const GLUvec4 *, const GLUvec4 *);
+void gluOuter4v(GLUmat4 *result, const GLUvec4 *, const GLUvec4 *);
 
 
-GLUvec4 gluMult4v_4v(const GLUvec4 *, const GLUvec4 *);
-GLUvec4 gluDiv4v_4v(const GLUvec4 *, const GLUvec4 *);
-GLUvec4 gluAdd4v_4v(const GLUvec4 *, const GLUvec4 *);
-GLUvec4 gluSub4v_4v(const GLUvec4 *, const GLUvec4 *);
+void gluMult4v_4v(GLUvec4 *result, const GLUvec4 *, const GLUvec4 *);
+void gluDiv4v_4v(GLUvec4 *result, const GLUvec4 *, const GLUvec4 *);
+void gluAdd4v_4v(GLUvec4 *result, const GLUvec4 *, const GLUvec4 *);
+void gluSub4v_4v(GLUvec4 *result, const GLUvec4 *, const GLUvec4 *);
 
-GLUvec4 gluMult4v_f(const GLUvec4 *, GLfloat);
-GLUvec4 gluDiv4v_f(const GLUvec4 *, GLfloat);
-GLUvec4 gluAdd4v_f(const GLUvec4 *, GLfloat);
-GLUvec4 gluSub4v_f(const GLUvec4 *, GLfloat);
+void gluMult4v_f(GLUvec4 *result, const GLUvec4 *, GLfloat);
+void gluDiv4v_f(GLUvec4 *result, const GLUvec4 *, GLfloat);
+void gluAdd4v_f(GLUvec4 *result, const GLUvec4 *, GLfloat);
+void gluSub4v_f(GLUvec4 *result, const GLUvec4 *, GLfloat);
 
-GLUmat4 gluMult4m_4m(const GLUmat4 *, const GLUmat4 *);
-GLUmat4 gluAdd4m_4m(const GLUmat4 *, const GLUmat4 *);
-GLUmat4 gluSub4m_4m(const GLUmat4 *, const GLUmat4 *);
-GLUvec4 gluMult4m_4v(const GLUmat4 *m, const GLUvec4 *v);
+void gluMult4m_4m(GLUmat4 *result, const GLUmat4 *, const GLUmat4 *);
+void gluAdd4m_4m(GLUmat4 *result, const GLUmat4 *, const GLUmat4 *);
+void gluSub4m_4m(GLUmat4 *result, const GLUmat4 *, const GLUmat4 *);
+void gluMult4m_4v(GLUvec4 *result, const GLUmat4 *m, const GLUvec4 *v);
 
-GLUmat4 gluMult4m_f(const GLUmat4 *, GLfloat);
+void gluMult4m_f(GLUmat4 *result, const GLUmat4 *, GLfloat);
 
-GLUmat4 gluScale4v(const GLUvec4 *);
-GLUmat4 gluTranslate3(GLfloat x, GLfloat y, GLfloat z);
-GLUmat4 gluTranslate4v(const GLUvec4 *);
-GLUmat4 gluRotate4v(const GLUvec4 *axis, GLfloat angle);
-GLUmat4 gluLookAt4v(const GLUvec4 *eye, const GLUvec4 *center,
-		    const GLUvec4 *up);
-GLUmat4 gluPerspective4(GLfloat fovy, GLfloat aspect, GLfloat near,
-			GLfloat far);
-GLUmat4 gluTranspose4(const GLUmat4 *m);
+void gluScale4v(GLUmat4 *result, const GLUvec4 *);
+void gluTranslate3(GLUmat4 *result, GLfloat x, GLfloat y, GLfloat z);
+void gluTranslate4v(GLUmat4 *result, const GLUvec4 *);
+void gluRotate4v(GLUmat4 *result, const GLUvec4 *axis, GLfloat angle);
+void gluLookAt4v(GLUmat4 *result, const GLUvec4 *eye, const GLUvec4 *center,
+		 const GLUvec4 *up);
+void gluPerspective4(GLUmat4 *result, GLfloat fovy, GLfloat aspect,
+		     GLfloat near, GLfloat far);
+void gluTranspose4(GLUmat4 *result, const GLUmat4 *m);
 
 extern const GLUmat4 gluIdentityMatrix;
 
