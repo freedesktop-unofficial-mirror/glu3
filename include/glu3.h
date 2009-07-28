@@ -156,7 +156,8 @@ GLUmat4 gluScale4v(const GLUvec4 *);
 GLUmat4 gluTranslate3(GLfloat x, GLfloat y, GLfloat z);
 GLUmat4 gluTranslate4v(const GLUvec4 *);
 GLUmat4 gluRotate4v(const GLUvec4 *axis, GLfloat angle);
-GLUmat4 gluLookAt4v(const GLUvec4 *, const GLUvec4 *, const GLUvec4 *);
+GLUmat4 gluLookAt4v(const GLUvec4 *eye, const GLUvec4 *center,
+		    const GLUvec4 *up);
 GLUmat4 gluPerspective4(GLfloat fovy, GLfloat aspect, GLfloat near,
 			GLfloat far);
 GLUmat4 gluTranspose4(const GLUmat4 *m);
