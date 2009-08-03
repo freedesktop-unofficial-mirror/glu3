@@ -229,7 +229,7 @@ extern inline void gluNormalize4v(GLUvec4 *result, const GLUvec4 *v)
 
 
 
-extern inline void gluTranspose4(GLUmat4 *result, const GLUmat4 *m)
+extern inline void gluTranspose4m(GLUmat4 *result, const GLUmat4 *m)
 {
 	unsigned i;
 	unsigned j;
@@ -260,8 +260,8 @@ extern inline void gluMult4m_4m(GLUmat4 *result,
 
 
 
-extern inline void gluTranslate3(GLUmat4 *result,
-				 GLfloat x, GLfloat y, GLfloat z)
+extern inline void gluTranslate3f(GLUmat4 *result,
+				  GLfloat x, GLfloat y, GLfloat z)
 {
 	memcpy(result, & gluIdentityMatrix, sizeof(gluIdentityMatrix));
 	result->col[3].values[0] = x;

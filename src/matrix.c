@@ -90,7 +90,7 @@ void gluLookAt4v(GLUmat4 *result,
 	rotate.col[2].values[2] = -f.values[2];
 	rotate.col[2].values[3] = 0.0f;
 	rotate.col[3] = col3;
-	gluTranspose4(& rotateT, & rotate);
+	gluTranspose4m(& rotateT, & rotate);
 
 	gluTranslate4v(& translate, & e);
 	gluMult4m_4m(result, & rotateT, & translate);
@@ -156,8 +156,8 @@ void gluRotate4v(GLUmat4 *result, const GLUvec4 *_axis, GLfloat angle)
 
 
 void
-gluPerspective4(GLUmat4 *result,
-		GLfloat fovy, GLfloat aspect, GLfloat near, GLfloat far)
+gluPerspective4f(GLUmat4 *result,
+		 GLfloat fovy, GLfloat aspect, GLfloat near, GLfloat far)
 {
 	const double sine = sin(DEG2RAD(fovy / 2.0));
 	const double cosine = cos(DEG2RAD(fovy / 2.0));
