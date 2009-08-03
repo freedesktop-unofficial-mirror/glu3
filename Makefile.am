@@ -21,7 +21,7 @@
 # USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 AUTOMAKE_OPTIONS = foreign
-SUBDIRS = src
+SUBDIRS = src test
 
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = glu3.pc

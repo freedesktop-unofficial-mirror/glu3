@@ -22,6 +22,7 @@
  */
 
 #include <math.h>
+#include <string.h>
 
 extern inline void gluMult4v_4v(GLUvec4 *result,
 				const GLUvec4 *v1, const GLUvec4 *v2)

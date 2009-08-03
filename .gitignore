@@ -16,3 +16,6 @@ missing
 stamp-h1
 autom4te.cache
 src/.deps
+test/.deps
+test/add4v_4v
+test/lookat4v

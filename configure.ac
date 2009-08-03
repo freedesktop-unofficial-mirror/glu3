@@ -64,5 +64,6 @@ CXXFLAGS="$CXXFLAGS $WARN"
 
 AC_OUTPUT([Makefile
 	src/Makefile
+	test/Makefile
 	glu3.pc])
 

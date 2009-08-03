@@ -54,13 +54,13 @@ void gluScale4v(GLUmat4 *result, const GLUvec4 *t)
 
 
 void gluLookAt4v(GLUmat4 *result,
-		 const GLUvec4 *eye,
-		 const GLUvec4 *center,
-		 const GLUvec4 *up)
+		 const GLUvec4 *_eye,
+		 const GLUvec4 *_center,
+		 const GLUvec4 *_up)
 {
 	static const GLUvec4 col3 = { { 0.0f, 0.0f, 0.0f, 1.0f } };
 	const GLUvec4 e = { 
-		{ -eye->values[0], -eye->values[1], -eye->values[2], 0.0f }
+		{ -_eye->values[0], -_eye->values[1], -_eye->values[2], 0.0f }
 	};
 	GLUmat4  translate;
 	GLUmat4  rotate;
@@ -68,12 +68,17 @@ void gluLookAt4v(GLUmat4 *result,
 	GLUvec4  f;
 	GLUvec4  s;
 	GLUvec4  u;
+	GLUvec4  center, up;
 
+	center = *_center;
+	center.values[3] = 0;
+	up = *_up;
+	up.values[3] = 0;
 
-	gluSub4v_4v(& f, center, eye);
+	gluAdd4v_4v(& f, &center, &e);
 	gluNormalize4v(& f, & f);
 
-	gluNormalize4v(& u, up);
+	gluNormalize4v(& u, &up);
 
 	gluCross4v(& s, & f, & u);
 	gluCross4v(& u, & s, & f);
