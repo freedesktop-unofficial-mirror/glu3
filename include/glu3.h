@@ -24,20 +24,31 @@
 #ifndef __glu3_h__
 #define __glu3_h__
 
+/**
+ * \file  glu3.h
+ * Interface definitions for GLU3 library.
+ */
+
 #include <GL/gl.h>
 
 #define GLU_VERSION_3_0
 
 struct GLUmat4;
 
+/**
+ * Basic four-component vector type.
+ */
 struct GLUvec4 {
+	/** Data values of the vector. */
 	GLfloat values[4];
 
 #ifdef __cplusplus
+	/** Default constructor.  Data values are uninitialized. */
 	inline GLUvec4(void)
 	{
 	}
 
+	/** Initialize vector from four float values. */
 	inline GLUvec4(GLfloat x , GLfloat y, GLfloat z, GLfloat w)
 	{
 		values[0] = x;
@@ -46,6 +57,7 @@ struct GLUvec4 {
 		values[3] = w;
 	}
 
+	/** Initialize vector from another vector. */
 	inline GLUvec4(const GLUvec4 &v)
 	{
 		values[0] = v.values[0];
@@ -54,24 +66,53 @@ struct GLUvec4 {
 		values[3] = v.values[3];
 	}
 
+	/**
+	 * Multiply a vector with a matrix.
+	 *
+	 * Multiply a row-vector with a 4x4 matrix resulting in a
+	 * row-vector.
+	 */
 	GLUvec4 operator *(const GLUmat4 &) const;
+
+	/**
+	 * Component-wise multiplication with a vec4.
+	 *
+	 * \sa gluMult4v_4v
+	 */
 	GLUvec4 operator *(const GLUvec4 &) const;
+
+	/**
+	 * Multiply with a scalar. 
+	 *
+	 * \sa gluMult4v_f
+	 */
 	GLUvec4 operator *(GLfloat) const;
 
+	/** Component-wise addition with a vec4. */
 	GLUvec4 operator +(const GLUvec4 &) const;
+
+	/** Component-wise subtraction with a vec4. */
 	GLUvec4 operator -(const GLUvec4 &) const;
 #endif /* __cplusplus */
 };
 
 
+/**
+ * Basic 4x4 matrix type.
+ */
 struct GLUmat4 {
+	/** Columns of the matrix. */
 	struct GLUvec4 col[4];
 
 #ifdef __cplusplus
+	/** Default constructor.  Columns are uninitialized. */
 	inline GLUmat4(void)
 	{
 	}
 
+	/** Initialize a matrix from four vec4 inputs.
+	 *  Each vec4 is a column in the resulting matrix.
+	 */
 	inline GLUmat4(const GLUvec4 & c0, const GLUvec4 & c1,
 		       const GLUvec4 & c2, const GLUvec4 & c3)
 	{
@@ -81,6 +122,7 @@ struct GLUmat4 {
 		col[3] = c3;
 	}
 
+	/** Initialize a matrix from another matrix. */
 	inline GLUmat4(const GLUmat4 &m)
 	{
 		col[0] = m.col[0];
@@ -90,11 +132,30 @@ struct GLUmat4 {
 	}
 
 
+	/**
+	 * Multiply a vector with a matrix.
+	 *
+	 * Multiply as a column-vector with a 4x4 matrix resulting in a
+	 * column-vector.
+	 *
+	 * \sa gluMult4m_4v
+	 */
 	GLUvec4 operator *(const GLUvec4 &) const;
+
+	/**
+	 * Matrix multiply with a 4x4 matrix. 
+	 *
+	 * \sa gluMult4m_4m
+	 */
 	GLUmat4 operator *(const GLUmat4 &) const;
+
+	/** Multiply with a scalar. */
 	GLUmat4 operator *(GLfloat) const;
 
+	/** Component-wise addition with a mat4. */
 	GLUmat4 operator +(const GLUmat4 &) const;
+
+	/** Component-wise subtraction with a mat4. */
 	GLUmat4 operator -(const GLUmat4 &) const;
 #endif	/* __cplusplus */
 };
@@ -120,48 +181,304 @@ typedef struct GLUmat4Stack GLUmat4Stack;
 #endif /*  __cplusplus */
 
 
-#ifdef __cplusplus
+#if defined(__cplusplus)
 extern "C" {
 #endif
 
+/**
+ * Four component dot product from vec4 sources. 
+ *
+ * \sa gluDot4 (C++)
+ */
 GLfloat gluDot4_4v(const GLUvec4 *, const GLUvec4 *);
+
+/**
+ * Three component dot product from vec4 sources. 
+ *
+ * \sa gluDot3 (C++)
+ */
 GLfloat gluDot3_4v(const GLUvec4 *, const GLUvec4 *);
+
+/**
+ * Two component dot product from vec4 sources.
+ *
+ * \sa gluDot2 (C++)
+ */
 GLfloat gluDot2_4v(const GLUvec4 *, const GLUvec4 *);
 
-void gluCross4v(GLUvec4 *result, const GLUvec4 *, const GLUvec4 *);
-void gluNormalize4v(GLUvec4 *result, const GLUvec4 *);
-GLfloat gluLength4v(const GLUvec4 *);
+/**
+ * Cross product from vec4 sources
+ *
+ * The 3-dimensional cross product of \c u and \c v is calculated.  The result
+ * is stored in the first three components of \c result.  The fourth component
+ * is set to 0.0.
+ *
+ * \sa gluCross (C++)
+ */
+void gluCross4v(GLUvec4 *result, const GLUvec4 *u, const GLUvec4 *v);
+
+/**
+ * Normalize a vec4
+ *
+ * The 4-dimensional normalization of \c u is stored in \c result.
+ *
+ * \sa gluNormalize (C++)
+ */
+void gluNormalize4v(GLUvec4 *result, const GLUvec4 *u);
+
+/**
+ * Calculate the length of a vec4
+ *
+ * The length (magnitude) the 4-dimensional vector \c u is returned.
+ *
+ * \sa gluLength (C++)
+ */
+GLfloat gluLength4v(const GLUvec4 *u);
+
+/**
+ * Calculate the squared length of a vec4
+ *
+ * The squared length (magnitude) the 4-dimensional vector \c u is returned.
+ *
+ * \sa gluLengthSqr (C++)
+ */
 GLfloat gluLengthSqr4v(const GLUvec4 *);
-void gluOuter4v(GLUmat4 *result, const GLUvec4 *, const GLUvec4 *);
+
+/**
+ * Calculate the four dimensional outer product of two vec4 sources
+ *
+ * Assuing \c u and \c v are column vectors, the outer product is:
+ *
+ * \f$\left( \begin{tabular}{cccc}
+ * $u_x v_x$ & $u_x v_y$ & $u_x v_y$ & $u_x v_w$ \\
+ * $u_y v_x$ & $u_y v_y$ & $u_y v_y$ & $u_y v_w$ \\
+ * $u_z v_x$ & $u_z v_y$ & $u_z v_y$ & $u_z v_w$ \\
+ * $u_w v_x$ & $u_w v_y$ & $u_w v_y$ & $u_w v_w$ \\
+ * \end{tabular} \right)\f$
+ */
+void gluOuter4v(GLUmat4 *result, const GLUvec4 *u, const GLUvec4 *v);
 
 
+/**
+ * Component-wise multiply two vec4s
+ *
+ * \sa GLUvec4::operator*
+ */
 void gluMult4v_4v(GLUvec4 *result, const GLUvec4 *, const GLUvec4 *);
+
+/**
+ * Component-wise divide two vec4s
+ */
 void gluDiv4v_4v(GLUvec4 *result, const GLUvec4 *, const GLUvec4 *);
+
+/**
+ * Component-wise add two vec4s
+ *
+ * \sa GLUvec4::operator+
+ */
 void gluAdd4v_4v(GLUvec4 *result, const GLUvec4 *, const GLUvec4 *);
+
+/**
+ * Component-wise subtract two vec4s
+ *
+ * \sa GLUvec4::operator-
+ */
 void gluSub4v_4v(GLUvec4 *result, const GLUvec4 *, const GLUvec4 *);
 
+/**
+ * Multiply with a scalar. 
+ *
+ * \sa GLUvec4::operator*
+ */
 void gluMult4v_f(GLUvec4 *result, const GLUvec4 *, GLfloat);
+
+/** Divide components of a vector by a scalar. */
 void gluDiv4v_f(GLUvec4 *result, const GLUvec4 *, GLfloat);
+
+/** Add a scalar to each of the components of a vector. */
 void gluAdd4v_f(GLUvec4 *result, const GLUvec4 *, GLfloat);
+
+/** Subtract a scalar from each of the components of a vector. */
 void gluSub4v_f(GLUvec4 *result, const GLUvec4 *, GLfloat);
 
+/**
+ * Matrix multiply with a 4x4 matrix.
+ *
+ * \sa GLUmat4::operator*
+ */
 void gluMult4m_4m(GLUmat4 *result, const GLUmat4 *, const GLUmat4 *);
+
+/**
+ * Component-wise addition with a mat4. 
+ *
+ * \sa GLUmat4::operator+
+ */
 void gluAdd4m_4m(GLUmat4 *result, const GLUmat4 *, const GLUmat4 *);
+
+/**
+ * Component-wise subtraction with a mat4. 
+ *
+ * \sa GLUmat4::operator-
+ */
 void gluSub4m_4m(GLUmat4 *result, const GLUmat4 *, const GLUmat4 *);
+
+/**
+ * Multiply a vector with a matrix.
+ *
+ * Multiply as a column-vector with a 4x4 matrix resulting in a
+ * column-vector.
+ *
+ * \sa GLUmat4::operator*
+ */
 void gluMult4m_4v(GLUvec4 *result, const GLUmat4 *m, const GLUvec4 *v);
 
+/**
+ * Multiply each component of a matrix with a scalar
+ *
+ * \sa GLUmat4::operator*
+ */
 void gluMult4m_f(GLUmat4 *result, const GLUmat4 *, GLfloat);
 
-void gluScale4v(GLUmat4 *result, const GLUvec4 *);
+/**
+ * Calculate a scaling transformation matrix from a vector
+ *
+ * A scaling transformation matrix is created using the x, y, and z
+ * components of \c u.  Specifically, the matrix generated is:
+ *
+ * \f$\left( \begin{tabular}{cccc}
+ * $u_x$ & $0$   & $0$   & $0$ \\
+ * $0$   & $u_y$ & $0$   & $0$ \\
+ * $0$   & $0$   & $u_z$ & $0$ \\
+ * $0$   & $0$   & $0$   & $1$ \\
+ * \end{tabular} \right)\f$
+ */
+void gluScale4v(GLUmat4 *result, const GLUvec4 *u);
+
+/** \name Translation matrix
+ */
+/*@{*/
+/**
+ * Calculate a translation matrix using x, y, and z offsets
+ *
+ * The matrix generated is:
+ *
+ * \f$\left( \begin{tabular}{cccc}
+ * $1$ & $0$ & $0$ & $x$ \\
+ * $0$ & $1$ & $0$ & $y$ \\
+ * $0$ & $0$ & $1$ & $z$ \\
+ * $0$ & $0$ & $0$ & $1$ \\
+ * \end{tabular} \right)\f$
+ */
 void gluTranslate3f(GLUmat4 *result, GLfloat x, GLfloat y, GLfloat z);
-void gluTranslate4v(GLUmat4 *result, const GLUvec4 *);
+
+/**
+ * Calculate a translation matrix using components of a vector
+ *
+ * The matrix generated is:
+ *
+ * \f$\left( \begin{tabular}{cccc}
+ * $1$ & $0$ & $0$ & $v_x$ \\
+ * $0$ & $1$ & $0$ & $v_y$ \\
+ * $0$ & $0$ & $1$ & $v_z$ \\
+ * $0$ & $0$ & $0$ & $1$ \\
+ * \end{tabular} \right)\f$
+ */
+void gluTranslate4v(GLUmat4 *result, const GLUvec4 *v);
+/*@}*/
+
+/**
+ * Calculate a rotation matrix around an arbitrary axis
+ *
+ * \param axis  Axis, based at the origin, around which to rotate
+ * \param angle Angle of rotation in degrees
+ *
+ * If the specificed axis is not unit length, the vector will be normalized.
+ */
 void gluRotate4v(GLUmat4 *result, const GLUvec4 *axis, GLfloat angle);
+
+/**
+ * Calculate a viewing transformation
+ *
+ * \param eye    Position, in 3-dimensional space, of the eye point.
+ * \param center Position, in 3-dimensional space, that the eye is looking at.
+ * \param up     Direction of the up vector.
+ * \param result Storage for the resulting matrix.
+ *
+ * Calculates a transformation matrix that maps the eye point to the origin
+ * and the \c center to the negative Z axis.  The direction defined by \c up
+ * is projected onto the X/Y plane an is mapped to the positive Y axis.
+ *
+ * The calculated matrix is:
+ *
+ * \f{eqnarray*}{
+ * f  &=& c - e \\
+ * f' &=& f \over |f| \\ 
+ * u' &=& u \over |u| \\ 
+ * s  &=& f \times u \\
+ * u''  &=& s \times f \\
+ * M &=& 
+ * \left( \begin{tabular}{cccc}
+ * $s_x$   & $s_y$   & $s_z$   & $0$ \\
+ * $u''_x$ & $u''_y$ & $u''_z$ & $0$ \\
+ * $-f'_x$ & $-f'_y$ & $-f'_z$ & $0$ \\
+ * $0$     & $0$     & $0$     & $1$ \\
+ * \end{tabular} \right)
+ * \times 
+ * \left( \begin{tabular}{cccc}
+ * $1$ & $0$ & $0$ & $-e_x$ \\
+ * $0$ & $1$ & $0$ & $-e_y$ \\
+ * $0$ & $0$ & $1$ & $-e_z$ \\
+ * $0$ & $0$ & $0$ & $1$ \\
+ * \end{tabular} \right) \\
+ * \f}
+ */
 void gluLookAt4v(GLUmat4 *result, const GLUvec4 *eye, const GLUvec4 *center,
 		 const GLUvec4 *up);
+
+/**
+ * Calculate a perspective projection matrix
+ *
+ * \param result Storage for the resulting matrix.
+ * \param fovy   Field-of-view in the Y direction
+ * \param aspect The ratio of the size in the X direction to the size in the
+ *               Y direction.  This is used to calculate the field-of-view in
+ *               the X direction.
+ * \param near   Distance to the near plane
+ * \param far    Distance to the far plane
+ *
+ * The matrix calculated is:
+ *
+ * \f{eqnarray*}{
+ * f &=& cotangent {\left({fovy \over 2} \right)} \\
+ * M &=& 
+ * \left( \begin{tabular}{cccc}
+ * $f \over aspect$ & $0$  & $0$   & $0$ \\
+ * $0$              & $f$ & $0$ & $0$ \\
+ * $0$              & $0$ & ${far + near} \over {near - far}$ & ${2 \times far \times near} \over {near - far}$ \\
+ * $0$              & $0$     & $0$     & $1$ \\
+ * \end{tabular} \right) \\
+ * \f}
+ */
 void gluPerspective4f(GLUmat4 *result, GLfloat fovy, GLfloat aspect,
 		      GLfloat near, GLfloat far);
+
+/**
+ * Calculate the transpose of a matrix.
+ */
 void gluTranspose4m(GLUmat4 *result, const GLUmat4 *m);
 
+/**
+ * Identity matrix
+ *
+ * Global constant containing the matrix:
+ *
+ * \f$\left( \begin{tabular}{cccc}
+ * $1$ & $0$ & $0$ & $0$ \\
+ * $0$ & $1$ & $0$ & $0$ \\
+ * $0$ & $0$ & $1$ & $0$ \\
+ * $0$ & $0$ & $0$ & $1$ \\
+ * \end{tabular} \right)\f$
+ */
 extern const GLUmat4 gluIdentityMatrix;
 
 #ifdef __cplusplus
@@ -169,13 +486,63 @@ extern const GLUmat4 gluIdentityMatrix;
 #endif
 
 #ifdef __cplusplus
+/**
+ * Four component dot product from vec4 sources. 
+ *
+ * \sa gluDot4_4v
+ */
 GLfloat gluDot4(const GLUvec4 &, const GLUvec4 &);
+
+/**
+ * Three component dot product from vec4 sources. 
+ *
+ * \sa gluDot3_4v
+ */
 GLfloat gluDot3(const GLUvec4 &, const GLUvec4 &);
+
+/**
+ * Two component dot product from vec4 sources.
+ *
+ * \sa gluDot2_4v
+ */
 GLfloat gluDot2(const GLUvec4 &, const GLUvec4 &);
 
+/**
+ * Cross product from vec4 sources
+ *
+ * The 3-dimensional cross product of \c u and \c v is calculated.  The result
+ * is stored in the first three components of \c result.  The fourth component
+ * is set to 0.0.
+ *
+ * \sa gluCross4v
+ */
 GLUvec4 gluCross(const GLUvec4 &, const GLUvec4 &);
+
+/**
+ * Normalize a vec4
+ *
+ * The 4-dimensional normalization of \c u is stored in \c result.
+ *
+ * \sa gluNormalize4v
+ */
 GLUvec4 gluNormalize(const GLUvec4 &);
+
+/**
+ * Calculate the length of a vec4
+ *
+ * The length (magnitude) the 4-dimensional vector \c u is returned.
+ *
+ * \sa gluLength4v
+ */
 GLfloat gluLength(const GLUvec4 &);
+
+/**
+ * Calculate the squared length of a vec4
+ *
+ * The squared length (magnitude) the 4-dimensional vector \c u is returned.
+ *
+ * \sa gluLengthSqr4v
+ */
 GLfloat gluLengthSqr(const GLUvec4 &);
 #endif /* __cplusplus */
 
