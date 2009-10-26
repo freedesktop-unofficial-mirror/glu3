@@ -436,6 +436,44 @@ void gluLookAt4v(GLUmat4 *result, const GLUvec4 *eye, const GLUvec4 *center,
 		 const GLUvec4 *up);
 
 /**
+ * \name Projection matrix
+ *
+ * Functions that generate various common projection matrixes.
+ */
+/*@{*/
+/**
+ * Generate a perspective projection matrix
+ *
+ * \param result Location to store the calculated matrix
+ * \param left   Coordinate for the left clipping plane
+ * \param right  Coordinate for the right clipping plane
+ * \param top    Coordinate for the top clipping plane
+ * \param bottom Coordinate for the bottom clipping plane
+ * \param near   Distance to the near plane
+ * \param far    Distance to the far plane
+ *
+ * The matrix calculated is:
+ *
+ * \f{eqnarray*}{
+ * M &=& 
+ * \left( \begin{tabular}{cccc}
+ * ${2 * near} \over {right - left}$    & $0$           & $ {{right + left} \over {right - left}}$ & $0$\\
+ * $0$              & ${2 * near} \over {top - bottom}$ & $ {{top + bottom} \over {top - bottom}}$ & $0$ \\
+ * $0$              & $0$                               & $-{{far + near}   \over {far - near}}$ & $-{{2 * far * near} \over {far - near}}$ \\
+ * $0$              & $0$     & $-1$     & $0$ \\
+ * \end{tabular} \right) \\
+ * \f}
+ *
+ * If \c left = \c right, \c top = \c bottom, or \c near = \c far, the function
+ * returns without writing any value to \c result.
+ *
+ * If either\c near or \c far are negative, the function returns without
+ * writing any value to \c result.
+ */
+void gluFrustum6f(GLUmat4 *result, GLfloat left, GLfloat right, GLfloat top,
+		  GLfloat bottom, GLfloat near, GLfloat far);
+
+/**
  * Calculate a perspective projection matrix
  *
  * \param result Storage for the resulting matrix.
@@ -461,6 +499,70 @@ void gluLookAt4v(GLUmat4 *result, const GLUvec4 *eye, const GLUvec4 *center,
  */
 void gluPerspective4f(GLUmat4 *result, GLfloat fovy, GLfloat aspect,
 		      GLfloat near, GLfloat far);
+
+/**
+ * Generate an orthographic projection matrix
+ *
+ * \param result Location to store the calculated matrix
+ * \param left   Coordinate for the left clipping plane
+ * \param right  Coordinate for the right clipping plane
+ * \param top    Coordinate for the top clipping plane
+ * \param bottom Coordinate for the bottom clipping plane
+ *
+ * The matrix calculated is:
+ *
+ * \f{eqnarray*}{
+ * M &=& 
+ * \left( \begin{tabular}{cccc}
+ * $2 \over {right - left}$ & $0$  & $0$   & $-{{right + left} \over {right - left}}$ \\
+ * $0$              & $2 \over {top - bottom}$ & $0$ & $-{{top + bottom} \over {top - bottom}}$ \\
+ * $0$              & $0$ & $-1$ & $0$ \\
+ * $0$              & $0$ & $0$  & $1$ \\
+ * \end{tabular} \right) \\
+ * \f}
+ *
+ * If \c left = \c right or \c top = \c bottom the function returns without
+ * writing any value to \c result.
+ *
+ * This function is identical to calling \c gluOrtho6f with \c near = -1 and
+ * \c far = 1.
+ *
+ * \sa gluOrtho6f
+ */
+void gluOrtho4f(GLUmat4 *result, GLfloat left, GLfloat right, GLfloat top,
+		GLfloat bottom);
+
+/**
+ * Generate an orthographic projection matrix
+ *
+ * \param result Location to store the calculated matrix
+ * \param left   Coordinate for the left clipping plane
+ * \param right  Coordinate for the right clipping plane
+ * \param top    Coordinate for the top clipping plane
+ * \param bottom Coordinate for the bottom clipping plane
+ * \param near   Distance to the near plane
+ * \param far    Distance to the far plane
+ *
+ * The matrix calculated is:
+ *
+ * \f{eqnarray*}{
+ * M &=& 
+ * \left( \begin{tabular}{cccc}
+ * $2 \over {right - left}$ & $0$  & $0$   & $-{{right + left} \over {right - left}}$ \\
+ * $0$              & $2 \over {top - bottom}$ & $0$ & $-{{top + bottom} \over {top - bottom}}$ \\
+ * $0$              & $0$ & $-2 \over {far - near}$ & $-{{far + near} \over {far - near}}$ \\
+ * $0$              & $0$     & $0$     & $1$ \\
+ * \end{tabular} \right) \\
+ * \f}
+ *
+ * If \c left = \c right, \c top = \c bottom, or \c near = \c far, the function
+ * returns without writing any value to \c result.
+ *
+ * \s gluOrtho4f
+ */
+void gluOrtho6f(GLUmat4 *result, GLfloat left, GLfloat right, GLfloat top,
+		GLfloat bottom, GLfloat near, GLfloat far);
+/*@}*/
 
 /**
  * Calculate the transpose of a matrix.

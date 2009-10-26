@@ -156,6 +156,31 @@ void gluRotate4v(GLUmat4 *result, const GLUvec4 *_axis, GLfloat angle)
 
 
 void
+gluFrustum6f(GLUmat4 *result,
+	     GLfloat left, GLfloat right, GLfloat top, GLfloat bottom,
+	     GLfloat near, GLfloat far)
+{
+	if ((right == left) || (top == bottom) || (near == far)
+	    || (near < 0.0) || (far < 0.0))
+		return;
+
+
+	memcpy(result, &gluIdentityMatrix, sizeof(gluIdentityMatrix));
+
+	result->col[0].values[0] = (2.0 * near) / (right - left);
+	result->col[1].values[1] = (2.0 * near) / (top - bottom);
+
+	result->col[2].values[0] = (right + left) / (right - left);
+	result->col[2].values[1] = (top + bottom) / (top - bottom);
+	result->col[2].values[2] = -(far + near) / (far - near);
+	result->col[2].values[3] = -1.0;
+
+	result->col[3].values[2] = -(2.0 * far * near) / (far - near);
+	result->col[3].values[3] =  0.0;
+}
+
+
+void
 gluPerspective4f(GLUmat4 *result,
 		 GLfloat fovy, GLfloat aspect, GLfloat near, GLfloat far)
 {
@@ -176,4 +201,31 @@ gluPerspective4f(GLUmat4 *result,
 	result->col[2].values[3] = -1.0;
 	result->col[3].values[2] = -2.0 * near * far / dz;
 	result->col[3].values[3] =  0.0;
+}
+
+
+void
+gluOrtho6f(GLUmat4 *result,
+	   GLfloat left, GLfloat right, GLfloat top, GLfloat bottom,
+	   GLfloat near, GLfloat far)
+{
+	if ((right == left) || (top == bottom) || (near == far))
+		return;
+
+	(void) memcpy(result, & gluIdentityMatrix, sizeof(*result));
+	result->col[0].values[0] = 2.0 / (right - left);
+	result->col[1].values[1] = 2.0 / (top - bottom);
+	result->col[2].values[2] = -2.0 / (far - near);
+
+	result->col[3].values[0] = -(right + left) / (right - left);
+	result->col[3].values[1] = -(top + bottom) / (top - bottom);
+	result->col[3].values[2] = -(far + near) / (far - near);
+}
+
+
+void
+gluOrtho4f(GLUmat4 *result, GLfloat left, GLfloat right, GLfloat top,
+	   GLfloat bottom)
+{
+	gluOrtho6f(result, left, right, top, bottom, -1.0, 1.0);
 }
