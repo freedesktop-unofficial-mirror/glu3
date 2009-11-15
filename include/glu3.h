@@ -351,6 +351,8 @@ void gluMult4m_f(GLUmat4 *result, const GLUmat4 *, GLfloat);
  * $0$   & $0$   & $u_z$ & $0$ \\
  * $0$   & $0$   & $0$   & $1$ \\
  * \end{tabular} \right)\f$
+ *
+ * \sa gluScale (C++)
  */
 void gluScale4v(GLUmat4 *result, const GLUvec4 *u);
 
@@ -368,6 +370,8 @@ void gluScale4v(GLUmat4 *result, const GLUvec4 *u);
  * $0$ & $0$ & $1$ & $z$ \\
  * $0$ & $0$ & $0$ & $1$ \\
  * \end{tabular} \right)\f$
+ *
+ * \sa gluTranslate (C++)
  */
 void gluTranslate3f(GLUmat4 *result, GLfloat x, GLfloat y, GLfloat z);
 
@@ -382,6 +386,8 @@ void gluTranslate3f(GLUmat4 *result, GLfloat x, GLfloat y, GLfloat z);
  * $0$ & $0$ & $1$ & $v_z$ \\
  * $0$ & $0$ & $0$ & $1$ \\
  * \end{tabular} \right)\f$
+ *
+ * \sa gluTranslate (C++)
  */
 void gluTranslate4v(GLUmat4 *result, const GLUvec4 *v);
 /*@}*/
@@ -393,6 +399,8 @@ void gluTranslate4v(GLUmat4 *result, const GLUvec4 *v);
  * \param angle Angle of rotation in degrees
  *
  * If the specificed axis is not unit length, the vector will be normalized.
+ *
+ * \sa gluRotate (C++)
  */
 void gluRotate4v(GLUmat4 *result, const GLUvec4 *axis, GLfloat angle);
 
@@ -431,6 +439,8 @@ void gluRotate4v(GLUmat4 *result, const GLUvec4 *axis, GLfloat angle);
  * $0$ & $0$ & $0$ & $1$ \\
  * \end{tabular} \right) \\
  * \f}
+ *
+ * \sa gluLookAt (C++)
  */
 void gluLookAt4v(GLUmat4 *result, const GLUvec4 *eye, const GLUvec4 *center,
 		 const GLUvec4 *up);
@@ -671,6 +681,143 @@ GLfloat gluLength(const GLUvec4 &);
  * \sa gluLengthSqr4v
  */
 GLfloat gluLengthSqr(const GLUvec4 &);
+
+/**
+ * Calculate a scaling transformation matrix from a vector
+ *
+ * A scaling transformation matrix is created using the x, y, and z
+ * components of \c u.  Specifically, the matrix generated is:
+ *
+ * \f$\left( \begin{tabular}{cccc}
+ * $u_x$ & $0$   & $0$   & $0$ \\
+ * $0$   & $u_y$ & $0$   & $0$ \\
+ * $0$   & $0$   & $u_z$ & $0$ \\
+ * $0$   & $0$   & $0$   & $1$ \\
+ * \end{tabular} \right)\f$
+ *
+ * \sa gluScale4v
+ */
+inline GLUmat4 gluScale(const GLUvec4 &u)
+{
+	GLUmat4 result;
+
+	gluScale4v(& result, & u);
+	return result;
+}
+
+/** \name Translation matrix
+ */
+/*@{*/
+/**
+ * Calculate a translation matrix using x, y, and z offsets
+ *
+ * The matrix generated is:
+ *
+ * \f$\left( \begin{tabular}{cccc}
+ * $1$ & $0$ & $0$ & $x$ \\
+ * $0$ & $1$ & $0$ & $y$ \\
+ * $0$ & $0$ & $1$ & $z$ \\
+ * $0$ & $0$ & $0$ & $1$ \\
+ * \end{tabular} \right)\f$
+ *
+ * \sa gluTranslate3f
+ */
+inline GLUmat4 gluTranslate(GLfloat x, GLfloat y, GLfloat z)
+{
+	GLUmat4 result;
+
+	gluTranslate3f(& result, x, y, z);
+	return result;
+}
+
+/**
+ * Calculate a translation matrix using components of a vector
+ *
+ * The matrix generated is:
+ *
+ * \f$\left( \begin{tabular}{cccc}
+ * $1$ & $0$ & $0$ & $v_x$ \\
+ * $0$ & $1$ & $0$ & $v_y$ \\
+ * $0$ & $0$ & $1$ & $v_z$ \\
+ * $0$ & $0$ & $0$ & $1$ \\
+ * \end{tabular} \right)\f$
+ *
+ * \sa gluTranslate4v
+ */
+inline GLUmat4 gluTranslate(const GLUvec4 &v)
+{
+	GLUmat4 result;
+
+	gluTranslate4v(& result, & v);
+	return result;
+}
+/*@}*/
+
+/**
+ * Calculate a rotation matrix around an arbitrary axis
+ *
+ * \param axis  Axis, based at the origin, around which to rotate
+ * \param angle Angle of rotation in degrees
+ *
+ * If the specificed axis is not unit length, the vector will be normalized.
+ *
+ * \sa gluRotate4v
+ */
+inline GLUmat4 gluRotate(const GLUvec4 &axis, GLfloat angle)
+{
+	GLUmat4 result;
+
+	gluRotate4v(& result, & axis, angle);
+	return result;
+}
+
+/**
+ * Calculate a viewing transformation
+ *
+ * \param eye    Position, in 3-dimensional space, of the eye point.
+ * \param center Position, in 3-dimensional space, that the eye is looking at.
+ * \param up     Direction of the up vector.
+ * \param result Storage for the resulting matrix.
+ *
+ * Calculates a transformation matrix that maps the eye point to the origin
+ * and the \c center to the negative Z axis.  The direction defined by \c up
+ * is projected onto the X/Y plane an is mapped to the positive Y axis.
+ *
+ * The calculated matrix is:
+ *
+ * \f{eqnarray*}{
+ * f  &=& c - e \\
+ * f' &=& f \over |f| \\ 
+ * u' &=& u \over |u| \\ 
+ * s  &=& f \times u \\
+ * u''  &=& s \times f \\
+ * M &=& 
+ * \left( \begin{tabular}{cccc}
+ * $s_x$   & $s_y$   & $s_z$   & $0$ \\
+ * $u''_x$ & $u''_y$ & $u''_z$ & $0$ \\
+ * $-f'_x$ & $-f'_y$ & $-f'_z$ & $0$ \\
+ * $0$     & $0$     & $0$     & $1$ \\
+ * \end{tabular} \right)
+ * \times 
+ * \left( \begin{tabular}{cccc}
+ * $1$ & $0$ & $0$ & $-e_x$ \\
+ * $0$ & $1$ & $0$ & $-e_y$ \\
+ * $0$ & $0$ & $1$ & $-e_z$ \\
+ * $0$ & $0$ & $0$ & $1$ \\
+ * \end{tabular} \right) \\
+ * \f}
+ *
+ * \sa gluLookAt4v
+ */
+inline GLUmat4 gluLookAt(const GLUvec4 &eye, const GLUvec4 &center,
+			 const GLUvec4 &up)
+{
+	GLUmat4 result;
+
+	gluLookAt4v(& result, & eye, & center, & up);
+	return result;
+}
+
 #endif /* __cplusplus */
 
 #include "glu3_scalar.h"
