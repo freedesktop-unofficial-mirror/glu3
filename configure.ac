@@ -19,7 +19,7 @@ AC_PROG_RANLIB
 # Checks for libraries.
 
 # Checks for header files.
-AC_CHECK_HEADERS([fcntl.h unistd.h])
+AC_CHECK_HEADERS([fcntl.h unistd.h sys/stat.h sys/types.h])
 
 # Checks for typedefs, structures, and compiler characteristics.
 AC_HEADER_STDBOOL
@@ -30,6 +30,7 @@ AC_TYPE_UINT8_T
 
 # Checks for library functions.
 AC_HEADER_STDC
+AC_CHECK_FUNCS(fopen_s)
 
 AC_ARG_ENABLE([debug],
     [AS_HELP_STRING([--enable-debug],

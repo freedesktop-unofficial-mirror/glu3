@@ -583,6 +583,31 @@ void gluTranspose4m(GLUmat4 *result, const GLUmat4 *m);
  */
 extern const GLUmat4 gluIdentityMatrix;
 
+/**
+ * Load a text file from disk
+ *
+ * \param file_name  Name of the file to be loaded
+ *
+ * Loads data from a named text file and returns a pointer to that data to the
+ * caller.  This may be useful, for example, for loading shader code from flies
+ * on disk.
+ *
+ * The pointer returned by this function should later be released by calling
+ * \c gluUnloadTextFile.
+ *
+ * \note
+ * The data pointed to by the return value if this function really is
+ * constant.  On some systems this function may be implemented by creating a
+ * read-only mapping of the file.  Writes to such data will result in program
+ * termination.
+ */
+extern const GLchar *gluLoadTextFile(const char *file_name);
+
+/**
+ * Release data previously loaded with gluLoadTextFile.
+ */
+extern void gluUnloadTextFile(const GLchar *text);
+
 #ifdef __cplusplus
 };
 #endif
