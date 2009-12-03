@@ -229,3 +229,109 @@ gluOrtho4f(GLUmat4 *result, GLfloat left, GLfloat right, GLfloat bottom,
 {
 	gluOrtho6f(result, left, right, bottom, top, -1.0, 1.0);
 }
+
+
+static double
+det3(const GLUmat4 *m, unsigned i, unsigned j)
+{
+	unsigned r;
+	unsigned c;
+	double det = 0.0;
+	GLUvec4 col[6];
+
+
+	/* Generate a 3x3 matrix from the original matrix with the ith column
+	 * and the jth row removed.  The columns of the matrix are duplicated
+	 * to make the 'c - r' column addressing, below, work out easier.
+	 */
+	for (c = 0; c < 4; c++) {
+		if (c < i) {
+			col[c + 0] = m->col[c];
+			col[c + 3] = m->col[c];
+		} else if (c > i) {
+			col[c - 1] = m->col[c];
+			col[c + 2] = m->col[c];
+		}
+	}
+
+	for (r = j; r < 3; r++) {
+		col[0].values[r] = col[0].values[r + 1];
+		col[1].values[r] = col[1].values[r + 1];
+		col[2].values[r] = col[2].values[r + 1];
+		col[3].values[r] = col[3].values[r + 1];
+		col[4].values[r] = col[4].values[r + 1];
+		col[5].values[r] = col[5].values[r + 1];
+	}
+
+
+	/* Calculate the determinant of the resulting 3x3 matrix.
+	 */
+	for (c = 0; c < 3; c++) {
+		double diag1 = col[c].values[0];
+		double diag2 = col[c].values[0];
+
+		for (r = 1; r < 3; r++) {
+			diag1 *= col[(0 + c) + r].values[r];
+			diag2 *= col[(3 + c) - r].values[r];
+		}
+
+		det += (diag1 - diag2);
+	}
+
+	return det;
+}
+
+
+GLfloat
+gluDeterminant4_4m(const GLUmat4 *m)
+{
+	double det = 0.0;
+	unsigned c;
+
+	for (c = 0; c < 4; c++) {
+		if (m->col[c].values[3] != 0.0) {
+			/* The usual equation is -1**(i+j) where i and j are
+			 * the row and column of the matrix on the range
+			 * [1, rows] and [1, cols].  Note that r and c are on
+			 * the range [0, rows - 1] and [0, cols - 1].
+			 */
+			const double sign = ((c ^ 3) & 1) ? -1.0 : 1.0;
+			const double d = det3(m, c, 3);
+
+			det += sign * m->col[c].values[3] * d;
+		}
+	}
+
+	return det;
+}
+
+
+GLboolean
+gluInverse4_4m(GLUmat4 *result, const GLUmat4 *m)
+{
+	const double det = gluDeterminant4_4m(m);
+	double inv_det;
+	unsigned c;
+	unsigned r;
+
+
+	if (det == 0.0)
+		return GL_FALSE;
+
+	inv_det = 1.0 / det;
+	for (c = 0; c < 4; c++) {
+		for (r = 0; r < 4; r++) {
+			/* The usual equation is -1**(i+j) where i and j are
+			 * the row and column of the matrix on the range
+			 * [1, rows] and [1, cols].  Note that r and c are on
+			 * the range [0, rows - 1] and [0, cols - 1].
+			 */
+			const double sign = ((c ^ r) & 1) ? -1.0 : 1.0;
+			const double d = det3(m, c, r);
+
+			result->col[r].values[c] = sign * inv_det * d;
+		}
+	}
+
+	return GL_TRUE;
+}

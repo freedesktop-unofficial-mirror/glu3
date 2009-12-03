@@ -3,7 +3,8 @@ LDADD = ../src/libGLU3.a -lm
 
 TESTS = \
 	add4v_4v \
-	lookat4v
+	lookat4v \
+	det
 
 EXTRA_PROGRAMS = $(TESTS)
 CLEANFILES = $(EXTRA_PROGRAMS)

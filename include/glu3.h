@@ -580,6 +580,21 @@ void gluOrtho6f(GLUmat4 *result, GLfloat left, GLfloat right, GLfloat bottom,
 void gluTranspose4m(GLUmat4 *result, const GLUmat4 *m);
 
 /**
+ * Calculate the determinant of a matrix.
+ */
+GLfloat gluDeterminant4_4m(const GLUmat4 *m);
+
+/**
+ * Calculate the inverse of a matrix.
+ *
+ * \return
+ * If the matrix is invertable (i.e., the determinant is not zero), \c GL_TRUE
+ * is returned.  Otherwise GL_FALSE is returned.
+ */
+GLboolean gluInverse4_4m(GLUmat4 *result, const GLUmat4 *m);
+
+
+/**
  * Identity matrix
  *
  * Global constant containing the matrix:
