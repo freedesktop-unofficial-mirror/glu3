@@ -581,15 +581,22 @@ void gluTranspose4m(GLUmat4 *result, const GLUmat4 *m);
 
 /**
  * Calculate the determinant of a matrix.
+ *
+ * \sa gluDeterminant4 (C++)
  */
 GLfloat gluDeterminant4_4m(const GLUmat4 *m);
 
 /**
  * Calculate the inverse of a matrix.
  *
+ * Inverts the matrix \c m and stores the result in \c result.  If \c m is
+ * not invertable, \c result is not modified
+ *
  * \return
  * If the matrix is invertable (i.e., the determinant is not zero), \c GL_TRUE
  * is returned.  Otherwise GL_FALSE is returned.
+ *
+ * \sa gluInverse4 (C++)
  */
 GLboolean gluInverse4_4m(GLUmat4 *result, const GLUmat4 *m);
 
@@ -872,6 +879,55 @@ inline GLUmat4 gluLookAt(const GLUvec4 &eye, const GLUvec4 &center,
 	GLUmat4 result;
 
 	gluLookAt4v(& result, & eye, & center, & up);
+	return result;
+}
+
+/**
+ * Calculate the determinant of a matrix.
+ *
+ * \sa gluDeterminant4_4m
+ */
+inline GLfloat gluDeterminant4(const GLUmat4 &m)
+{
+	return gluDeterminant4_4m(& m);
+}
+
+/**
+ * Calculate the inverse of a matrix.
+ *
+ * Inverts the matrix \c m and stores the result in \c result.  If \c m is
+ * not invertable, \c result is not modified
+ *
+ * \return
+ * If the matrix is invertable (i.e., the determinant is not zero), \c GL_TRUE
+ * is returned.  Otherwise GL_FALSE is returned.
+ *
+ * \sa gluInverse4_4m
+ */
+inline GLboolean gluInverse4(GLUmat4 &result, const GLUmat4 &m)
+{
+	return gluInverse4_4m(& result, & m);
+}
+
+/**
+ * Calculate the inverse of a matrix.
+ *
+ * \return
+ * The inverse of the matrix \c m.  If \c m is not invertable, the return
+ * result is undefined.
+ *
+ * \warning
+ * This function is really only safe when the input matrix is known to be
+ * invertable.  Nearly all well behaved transformation matrices fall into this
+ * category.
+ *
+ * \sa gluInverse4_4m
+ */
+inline GLUmat4 gluInverse4(const GLUmat4 &m)
+{
+	GLUmat4 result;
+
+	gluInverse4_4m(& result, & m);
 	return result;
 }
 
