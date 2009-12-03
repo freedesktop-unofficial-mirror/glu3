@@ -480,8 +480,8 @@ void gluLookAt4v(GLUmat4 *result, const GLUvec4 *eye, const GLUvec4 *center,
  * If either\c near or \c far are negative, the function returns without
  * writing any value to \c result.
  */
-void gluFrustum6f(GLUmat4 *result, GLfloat left, GLfloat right, GLfloat top,
-		  GLfloat bottom, GLfloat near, GLfloat far);
+void gluFrustum6f(GLUmat4 *result, GLfloat left, GLfloat right, GLfloat bottom,
+		  GLfloat top, GLfloat near, GLfloat far);
 
 /**
  * Calculate a perspective projection matrix
@@ -539,8 +539,8 @@ void gluPerspective4f(GLUmat4 *result, GLfloat fovy, GLfloat aspect,
  *
  * \sa gluOrtho6f
  */
-void gluOrtho4f(GLUmat4 *result, GLfloat left, GLfloat right, GLfloat top,
-		GLfloat bottom);
+void gluOrtho4f(GLUmat4 *result, GLfloat left, GLfloat right, GLfloat bottom,
+		GLfloat top);
 
 /**
  * Generate an orthographic projection matrix
@@ -570,8 +570,8 @@ void gluOrtho4f(GLUmat4 *result, GLfloat left, GLfloat right, GLfloat top,
  *
  * \s gluOrtho4f
  */
-void gluOrtho6f(GLUmat4 *result, GLfloat left, GLfloat right, GLfloat top,
-		GLfloat bottom, GLfloat near, GLfloat far);
+void gluOrtho6f(GLUmat4 *result, GLfloat left, GLfloat right, GLfloat bottom,
+		GLfloat top, GLfloat near, GLfloat far);
 /*@}*/
 
 /**

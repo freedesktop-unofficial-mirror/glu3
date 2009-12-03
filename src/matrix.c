@@ -157,7 +157,7 @@ void gluRotate4v(GLUmat4 *result, const GLUvec4 *_axis, GLfloat angle)
 
 void
 gluFrustum6f(GLUmat4 *result,
-	     GLfloat left, GLfloat right, GLfloat top, GLfloat bottom,
+	     GLfloat left, GLfloat right, GLfloat bottom, GLfloat top,
 	     GLfloat near, GLfloat far)
 {
 	if ((right == left) || (top == bottom) || (near == far)
@@ -206,7 +206,7 @@ gluPerspective4f(GLUmat4 *result,
 
 void
 gluOrtho6f(GLUmat4 *result,
-	   GLfloat left, GLfloat right, GLfloat top, GLfloat bottom,
+	   GLfloat left, GLfloat right, GLfloat bottom, GLfloat top,
 	   GLfloat near, GLfloat far)
 {
 	if ((right == left) || (top == bottom) || (near == far))
@@ -224,8 +224,8 @@ gluOrtho6f(GLUmat4 *result,
 
 
 void
-gluOrtho4f(GLUmat4 *result, GLfloat left, GLfloat right, GLfloat top,
-	   GLfloat bottom)
+gluOrtho4f(GLUmat4 *result, GLfloat left, GLfloat right, GLfloat bottom,
+	   GLfloat top)
 {
-	gluOrtho6f(result, left, right, top, bottom, -1.0, 1.0);
+	gluOrtho6f(result, left, right, bottom, top, -1.0, 1.0);
 }
