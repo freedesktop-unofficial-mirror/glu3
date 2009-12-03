@@ -653,7 +653,13 @@ GLfloat gluDot2(const GLUvec4 &, const GLUvec4 &);
  *
  * \sa gluCross4v
  */
-GLUvec4 gluCross(const GLUvec4 &, const GLUvec4 &);
+inline GLUvec4 gluCross(const GLUvec4 &u, const GLUvec4 &v)
+{
+	GLUvec4 t;
+
+	gluCross4v(& t, & u, & v);
+	return t;
+}
 
 /**
  * Normalize a vec4
@@ -662,7 +668,13 @@ GLUvec4 gluCross(const GLUvec4 &, const GLUvec4 &);
  *
  * \sa gluNormalize4v
  */
-GLUvec4 gluNormalize(const GLUvec4 &);
+inline GLUvec4 gluNormalize(const GLUvec4 &v)
+{
+	GLUvec4 t;
+
+	gluNormalize4v(& t, & v);
+	return t;
+}
 
 /**
  * Calculate the length of a vec4
@@ -671,7 +683,10 @@ GLUvec4 gluNormalize(const GLUvec4 &);
  *
  * \sa gluLength4v
  */
-GLfloat gluLength(const GLUvec4 &);
+inline GLfloat gluLength(const GLUvec4 &u)
+{
+	return gluLength4v(& u);
+}
 
 /**
  * Calculate the squared length of a vec4
@@ -680,7 +695,10 @@ GLfloat gluLength(const GLUvec4 &);
  *
  * \sa gluLengthSqr4v
  */
-GLfloat gluLengthSqr(const GLUvec4 &);
+inline GLfloat gluLengthSqr(const GLUvec4 &u)
+{
+	return gluLengthSqr4v(& u);
+}
 
 /**
  * Calculate a scaling transformation matrix from a vector
@@ -699,6 +717,30 @@ GLfloat gluLengthSqr(const GLUvec4 &);
  */
 inline GLUmat4 gluScale(const GLUvec4 &u)
 {
+	GLUmat4 result;
+
+	gluScale4v(& result, & u);
+	return result;
+}
+
+/**
+ * Calculate a scaling transformation matrix from a vector
+ *
+ * A scaling transformation matrix is created using the x, y, and z
+ * components of \c u.  Specifically, the matrix generated is:
+ *
+ * \f$\left( \begin{tabular}{cccc}
+ * $x$   & $0$   & $0$   & $0$ \\
+ * $0$   & $y$   & $0$   & $0$ \\
+ * $0$   & $0$   & $z$   & $0$ \\
+ * $0$   & $0$   & $0$   & $1$ \\
+ * \end{tabular} \right)\f$
+ *
+ * \sa gluScale4v
+ */
+inline GLUmat4 gluScale(GLfloat x, GLfloat y, GLfloat z)
+{
+	GLUvec4 u(x, y, z, 1.0);
 	GLUmat4 result;
 
 	gluScale4v(& result, & u);
