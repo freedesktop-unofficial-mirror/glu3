@@ -48,6 +48,15 @@ struct GLUvec4 {
 	{
 	}
 
+	/** Initialize vector from one float value. */
+	inline GLUvec4(GLfloat v)
+	{
+		values[0] = v;
+		values[1] = v;
+		values[2] = v;
+		values[3] = v;
+	}
+
 	/** Initialize vector from four float values. */
 	inline GLUvec4(GLfloat x , GLfloat y, GLfloat z, GLfloat w)
 	{
@@ -95,6 +104,38 @@ struct GLUvec4 {
 	GLUvec4 operator -(const GLUvec4 &) const;
 #endif /* __cplusplus */
 };
+
+
+#ifdef __cplusplus
+inline GLUvec4 operator *(GLfloat f, const GLUvec4 &v)
+{
+	return v * f;
+}
+
+inline GLUvec4 &operator +=(GLUvec4 &l, const GLUvec4 &r)
+{
+	l = l + r;
+	return l;
+}
+
+inline GLUvec4 &operator -=(GLUvec4 &l, const GLUvec4 &r)
+{
+	l = l - r;
+	return l;
+}
+
+inline GLUvec4 &operator *=(GLUvec4 &l, const GLUvec4 &r)
+{
+	l = l * r;
+	return l;
+}
+
+inline GLUvec4 &operator *=(GLUvec4 &l, GLfloat r)
+{
+	l = l * r;
+	return l;
+}
+#endif /* __cplusplus */
 
 
 /**
