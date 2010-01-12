@@ -215,10 +215,58 @@ struct GLUmat4Stack {
 #endif	/* __cplusplus */
 };
 
+
+struct GLUarcball {
+	/**
+	 * Base location of the viewport.
+	 */
+	/*@{*/
+	unsigned viewport_x;
+	unsigned viewport_y;
+	/*@}*/
+	
+	/**
+	 * Dimensions of the viewport.
+	 */
+	/*@{*/
+	unsigned viewport_width;
+	unsigned viewport_height;
+	/*@}*/
+
+	/**
+	 * Screen X/Y location of initial mouse click.
+	 */
+	/*@{*/
+	unsigned click_x;
+	unsigned click_y;
+	/*@}*/
+
+
+#ifdef __cplusplus
+	void viewport(unsigned x, unsigned y, unsigned width, unsigned height)
+	{
+		viewport_x = x;
+		viewport_y = y;
+		viewport_width = width;
+		viewport_height = height;
+	}
+
+	void click(unsigned x, unsigned y)
+	{
+		click_x = x;
+		click_y = y;
+	}
+
+	GLUmat4 drag(unsigned end_x, unsigned end_y);
+#endif	/* __cplusplus */
+};
+
+
 #ifndef __cplusplus
 typedef struct GLUvec4 GLUvec4;
 typedef struct GLUmat4 GLUmat4;
 typedef struct GLUmat4Stack GLUmat4Stack;
+typedef struct GLUarcball GLUarcball;
 #endif /*  __cplusplus */
 
 
@@ -681,6 +729,15 @@ extern const GLchar *gluLoadTextFile(const char *file_name);
  */
 extern void gluUnloadTextFile(const GLchar *text);
 
+extern void gluArcballViewport(GLUarcball *ball, unsigned x, unsigned y,
+    unsigned width, unsigned height);
+
+extern void gluArcballClick(GLUarcball *ball, unsigned start_x,
+    unsigned start_y);
+
+extern void gluArcballDrag(GLUarcball *ball, GLUmat4 *transformation,
+    unsigned end_x, unsigned end_y);
+
 #ifdef __cplusplus
 };
 #endif
@@ -972,6 +1029,14 @@ inline GLUmat4 gluInverse4(const GLUmat4 &m)
 	return result;
 }
 
+
+inline GLUmat4 GLUarcball::drag(unsigned end_x, unsigned end_y)
+{
+	GLUmat4 result;
+
+	gluArcballDrag(this, & result, end_x, end_y);
+	return result;
+}
 #endif /* __cplusplus */
 
 #include "glu3_scalar.h"
