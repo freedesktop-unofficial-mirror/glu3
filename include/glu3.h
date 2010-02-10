@@ -29,6 +29,11 @@
  * Interface definitions for GLU3 library.
  */
 
+#ifdef _WIN32
+#define WIN32_LEAN_AND_MEAN 1
+#include <windows.h>
+#endif
+
 #include <GL/gl.h>
 
 #define GLU_VERSION_3_0
