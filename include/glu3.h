@@ -37,7 +37,7 @@
 #include <GL/gl.h>
 #include <GL/glext.h>
 
-#define GLU_VERSION_3_0
+#define GLU3_VERSION_0_1
 
 struct GLUmat4;
 
