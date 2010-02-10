@@ -158,36 +158,36 @@ void gluRotate4v(GLUmat4 *result, const GLUvec4 *_axis, GLfloat angle)
 void
 gluFrustum6f(GLUmat4 *result,
 	     GLfloat left, GLfloat right, GLfloat bottom, GLfloat top,
-	     GLfloat near, GLfloat far)
+	     GLfloat n, GLfloat f)
 {
-	if ((right == left) || (top == bottom) || (near == far)
-	    || (near < 0.0) || (far < 0.0))
+	if ((right == left) || (top == bottom) || (n == f)
+	    || (n < 0.0) || (f < 0.0))
 		return;
 
 
 	memcpy(result, &gluIdentityMatrix, sizeof(gluIdentityMatrix));
 
-	result->col[0].values[0] = (2.0 * near) / (right - left);
-	result->col[1].values[1] = (2.0 * near) / (top - bottom);
+	result->col[0].values[0] = (2.0 * n) / (right - left);
+	result->col[1].values[1] = (2.0 * n) / (top - bottom);
 
 	result->col[2].values[0] = (right + left) / (right - left);
 	result->col[2].values[1] = (top + bottom) / (top - bottom);
-	result->col[2].values[2] = -(far + near) / (far - near);
+	result->col[2].values[2] = -(f + n) / (f - n);
 	result->col[2].values[3] = -1.0;
 
-	result->col[3].values[2] = -(2.0 * far * near) / (far - near);
+	result->col[3].values[2] = -(2.0 * f * n) / (f - n);
 	result->col[3].values[3] =  0.0;
 }
 
 
 void
 gluPerspective4f(GLUmat4 *result,
-		 GLfloat fovy, GLfloat aspect, GLfloat near, GLfloat far)
+		 GLfloat fovy, GLfloat aspect, GLfloat n, GLfloat f)
 {
 	const double sine = sin(DEG2RAD(fovy / 2.0));
 	const double cosine = cos(DEG2RAD(fovy / 2.0));
 	const double sine_aspect = sine * aspect;
-	const double dz = far - near;
+	const double dz = f - n;
 
 
 	memcpy(result, &gluIdentityMatrix, sizeof(gluIdentityMatrix));
@@ -197,9 +197,9 @@ gluPerspective4f(GLUmat4 *result,
 
 	result->col[0].values[0] = cosine / sine_aspect;
 	result->col[1].values[1] = cosine / sine;
-	result->col[2].values[2] = -(far + near) / dz;
+	result->col[2].values[2] = -(f + n) / dz;
 	result->col[2].values[3] = -1.0;
-	result->col[3].values[2] = -2.0 * near * far / dz;
+	result->col[3].values[2] = -2.0 * n * f / dz;
 	result->col[3].values[3] =  0.0;
 }
 
@@ -207,19 +207,19 @@ gluPerspective4f(GLUmat4 *result,
 void
 gluOrtho6f(GLUmat4 *result,
 	   GLfloat left, GLfloat right, GLfloat bottom, GLfloat top,
-	   GLfloat near, GLfloat far)
+	   GLfloat n, GLfloat f)
 {
-	if ((right == left) || (top == bottom) || (near == far))
+	if ((right == left) || (top == bottom) || (n == f))
 		return;
 
 	(void) memcpy(result, & gluIdentityMatrix, sizeof(*result));
 	result->col[0].values[0] = 2.0 / (right - left);
 	result->col[1].values[1] = 2.0 / (top - bottom);
-	result->col[2].values[2] = -2.0 / (far - near);
+	result->col[2].values[2] = -2.0 / (f - n);
 
 	result->col[3].values[0] = -(right + left) / (right - left);
 	result->col[3].values[1] = -(top + bottom) / (top - bottom);
-	result->col[3].values[2] = -(far + near) / (far - near);
+	result->col[3].values[2] = -(f + n) / (f - n);
 }
 
 
