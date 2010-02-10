@@ -32,10 +32,8 @@
 # include <unistd.h>
 #else
 # define USE_STDIO
-
 # ifdef _WIN32
-#  define WIN32_LEAN_AND_MEAN
-#  include <windows.h>
+#  define HAVE_FOPEN_S
 # endif
 #endif
 
