@@ -35,6 +35,7 @@
 #endif
 
 #include <GL/gl.h>
+#include <GL/glext.h>
 
 #define GLU_VERSION_3_0
 
