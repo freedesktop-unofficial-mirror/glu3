@@ -226,7 +226,7 @@ extern INLINE GLfloat gluLengthSqr4v(const GLUvec4 *v)
 
 extern INLINE GLfloat gluLength4v(const GLUvec4 *v)
 {
-	return sqrt(gluLengthSqr4v(v));
+	return (GLfloat) sqrt(gluLengthSqr4v(v));
 }
 
 
