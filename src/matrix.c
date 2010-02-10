@@ -23,6 +23,7 @@
 
 #ifdef _MSC_VER
 #define _USE_MATH_DEFINES
+#pragma warning(disable: 4244)
 #endif
 
 #include <string.h>
