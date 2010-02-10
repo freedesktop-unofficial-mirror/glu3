@@ -21,8 +21,16 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+#ifdef _MSC_VER
+#define _USE_MATH_DEFINES
+#endif
+
 #include <string.h>
 #include "glu3.h"
+
+#ifndef M_PI
+#define M_PI 3.14159265358979323846
+#endif
 
 #define DEG2RAD(d) ((d) * M_PI / 180.0)
 
