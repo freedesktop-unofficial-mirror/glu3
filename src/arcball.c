@@ -114,7 +114,7 @@ gluArcballDrag(GLUarcball *ball, GLUmat4 *result, unsigned x, unsigned y)
 	GLUvec4 axis;
 	float w_factor;
 	float h_factor;
-
+	float length_squared;
 
 	if ((ball->viewport_width == 0.0) || (ball->viewport_height == 0.0)) {
 		memcpy(result, & gluIdentityMatrix, sizeof(gluIdentityMatrix));
@@ -134,7 +134,7 @@ gluArcballDrag(GLUarcball *ball, GLUmat4 *result, unsigned x, unsigned y)
 
 	gluCross4v(& axis, & pick, & end);
 
-	const float length_squared = gluLengthSqr4v(& axis);
+	length_squared = gluLengthSqr4v(& axis);
 	if (length_squared > 0.0000001) {
 		axis.values[3] = gluDot3_4v(& pick, & end);
 	} else {
