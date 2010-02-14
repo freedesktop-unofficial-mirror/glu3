@@ -727,11 +727,15 @@ extern const GLUmat4 gluIdentityMatrix;
  * constant.  On some systems this function may be implemented by creating a
  * read-only mapping of the file.  Writes to such data will result in program
  * termination.
+ *
+ * \sa gluUnloadTextFile
  */
 extern const GLchar *gluLoadTextFile(const char *file_name);
 
 /**
  * Release data previously loaded with gluLoadTextFile.
+ *
+ * \sa gluLoadTextFile
  */
 extern void gluUnloadTextFile(const GLchar *text);
 
