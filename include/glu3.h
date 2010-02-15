@@ -268,6 +268,123 @@ struct GLUarcball {
 };
 
 
+#ifdef __cplusplus
+/**
+ * Base class of a shape generators.
+ *
+ * Base class defines the interface for all shape generators.  Concrete shape
+ * generator class are expected to implement:
+ *
+ *  * \c vertex_count
+ *  * \c element_count
+ *  * \c primitive_count
+ *  * \c generate
+ *
+ * Consumers of generated data are expected to subclass concrete shape
+ * generators.  These classes are expected to implement:
+ *
+ *  * \c emit_vertex
+ *  * \c emit_begin
+ *  * \c emit_index
+ *  * \c emit_end
+ */
+class GLUshape {
+public:
+	virtual ~GLUshape()
+	{
+	}
+
+	/**
+	 * Select the orientation of generated normals
+	 *
+	 * \param outside  Set to true if normals should point towards the
+	 *                 outside of the object.
+	 */
+	void orientation(bool outside);
+
+	/**
+	 * Select per-vertex or per-polygon normals
+	 */
+	void normals(bool per_vertex);
+
+	/**
+	 * Get the number of vertices in the shape
+	 *
+	 * This can be used in the constructor for derived classes, for
+	 * example, to determine how much storage to allocate for vertex data.
+	 */
+	virtual unsigned vertex_count(void) const = 0;
+
+	/**
+	 * Get the number of elements used to draw primitives for the shape
+	 *
+	 * This can be used in the constructor for derived classes, for
+	 * example, to determine how much storage to allocate for element data.
+	 */
+	virtual unsigned element_count(void) const = 0;
+
+	/**
+	 * Get the number of primitves used to draw the shape
+	 *
+	 * This can be used in the constructor for derived classes, for
+	 * example, to determine the primitive count for a call to
+	 * \c glMultiDrawElements or to determine how much padding to allocate
+	 * for restart values used with primitive restart.
+	 */
+	virtual unsigned primitive_count(void) const = 0;
+
+	/**
+	 * Generate the primitive
+	 *
+	 * Causes the data for the primitive to be generated.  This will result
+	 * in the \c emit_vertex, \c emit_begin, \c emit_index, and \c emit_end
+	 * methods to be invoked with the data as it is generated.
+	 */
+	virtual void generate(void) = 0;
+
+protected:
+	GLUshape(void) : normals_point_out(true), normals_per_vertex(true)
+	{
+	}
+
+
+	/**
+	 * Callback function used to emit individual vertices.
+	 *
+	 * \param position  Object-space position of the vertex.
+	 * \param normal    Object-space normal of the vertex.
+	 * \param tangent   Object-space tangent of the vertex.
+	 * \param uv        Parameter-space position of the vertex.  The
+	 *                  per-vertex values will range from (0,0,0,0) to
+	 *                  (1, 1, 0, 0).
+	 */
+	virtual void emit_vertex(const GLUvec4 &position,
+				 const GLUvec4 &normal,
+				 const GLUvec4 &tangent,
+				 const GLUvec4 &uv) = 0;
+
+	/**
+	 * Start a new indexed primitive.
+	 *
+	 * \param mode  GL primitive drawing mode used for this primitive
+	 */
+	virtual void emit_begin(GLenum mode) = 0;
+
+	/**
+	 * Callback function used to emit element indices used for drawing
+	 */
+	virtual void emit_index(unsigned idx) = 0;
+
+	/**
+	 * End an index primitive previously started with emit_begin.
+	 */
+	virtual void emit_end(void) = 0;
+
+	bool normals_point_out;
+	bool normals_per_vertex;
+};
+#endif	
+
 #ifndef __cplusplus
 typedef struct GLUvec4 GLUvec4;
 typedef struct GLUmat4 GLUmat4;
