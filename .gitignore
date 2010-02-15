@@ -20,4 +20,5 @@ test/.deps
 test/add4v_4v
 test/lookat4v
 test/det
+test/sphere
 docs/
