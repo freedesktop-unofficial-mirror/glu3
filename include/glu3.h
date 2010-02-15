@@ -383,6 +383,35 @@ protected:
 	bool normals_point_out;
 	bool normals_per_vertex;
 };
+
+
+/**
+ * Shape generator that generates a sphere.
+ */
+class GLUsphere : public GLUshape {
+public:
+	/**
+	 * Construct a new sphere shape generator
+	 *
+	 * \param radius  Specifies the radius of the sphere.
+	 * \param slices  Specifies the number of subdivisions around the
+	 *                z-axis.  These subdivisions are analogous to the
+	 *                slices of an orange.  These also match longitude
+	 *                lines on the globe.
+	 * \param stacks  Specifies the number of subdivisions along the
+	 *                z-axis.  These match the latitude lines on the globe.
+	 */
+	GLUsphere(GLdouble radius, GLint slices, GLint stacks);
+	virtual unsigned vertex_count(void) const;
+	virtual unsigned element_count(void) const;
+	virtual unsigned primitive_count(void) const;
+	virtual void generate(void);
+
+private:
+	double radius;
+	unsigned slices;
+	unsigned stacks;
+};
 #endif	
 
 #ifndef __cplusplus
