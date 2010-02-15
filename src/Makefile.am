@@ -24,7 +24,7 @@ AM_CXXFLAGS=-I../include
 AM_CFLAGS=-I../include
 
 lib_LIBRARIES = libGLU3.a
-libGLU3_a_SOURCES = matrix.c load_text.c arcball.c
+libGLU3_a_SOURCES = matrix.c load_text.c arcball.c revolve.c
 
 libGLU3includedir = ${includedir}
 libGLU3include_HEADERS = ../include/glu3.h ../include/glu3_scalar.h
