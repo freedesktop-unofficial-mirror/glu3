@@ -1,5 +1,4 @@
 /*
-
  * Copyright © 2010 Ian D. Romanick
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -61,7 +60,7 @@ static void sphere_end_cb(void *data);
  * This is arguably a mis-use of the "decorator" pattern, but it is the most
  * efficient way to do this.
  */
-class GLUsphereFriend : public GLUsphere {
+class GLUconsumerFriend : public GLUshapeConsumer {
 	friend void sphere_revolve_cb(void *data,
 				      const GLUvec4 *position,
 				      const GLUvec4 *normal,
@@ -119,49 +118,49 @@ static void
 sphere_revolve_cb(void *data, const GLUvec4 *position, const GLUvec4 *normal,
 		  const GLUvec4 *tangent, const GLUvec4 *uv)
 {
-	GLUsphereFriend *s = (GLUsphereFriend *) data;
+	GLUconsumerFriend *c = (GLUconsumerFriend *) data;
 
-	s->emit_vertex(*position, *normal, *tangent, *uv);
+	c->vertex(*position, *normal, *tangent, *uv);
 }
 
 
 static void
 sphere_begin_cb(void *data, GLenum mode)
 {
-	GLUsphereFriend *s = (GLUsphereFriend *) data;
+	GLUconsumerFriend *c = (GLUconsumerFriend *) data;
 
-	s->emit_begin(mode);
+	c->begin_primitive(mode);
 }
 
 
 static void
 sphere_index_cb(void *data, unsigned index)
 {
-	GLUsphereFriend *s = (GLUsphereFriend *) data;
+	GLUconsumerFriend *c = (GLUconsumerFriend *) data;
 
-	s->emit_index(index);
+	c->index(index);
 }
 
 
 static void
 sphere_end_cb(void *data)
 {
-	GLUsphereFriend *s = (GLUsphereFriend *) data;
+	GLUconsumerFriend *c = (GLUconsumerFriend *) data;
 
-	s->emit_end();
+	c->end_primitive();
 }
 
 
 void
-GLUsphere::generate(void)
+GLUsphere::generate(GLUshapeConsumer *consumer) const
 {
 	generate_sphere(radius, slices, stacks,
 			normals_point_out,
-			sphere_revolve_cb, (void *) this);
+			sphere_revolve_cb, (void *) consumer);
 
 	generate_triangle_mesh(slices, stacks + 1, stacks + 1,
 			       sphere_begin_cb,
 			       sphere_index_cb,
 			       sphere_end_cb,
-			       (void *) this);
+			       (void *) consumer);
 }

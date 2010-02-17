@@ -2,12 +2,13 @@
 #include <cstdio>
 #include "glu3.h"
 
-class check_sphere : public GLUsphere {
+class check_sphere : public GLUshapeConsumer {
 public:
-	check_sphere(double r, int sl, int st) :
-		GLUsphere(r, sl, st), pass(true), vert(0),
-		prim(0), elts(0), r(r), mode(0)
+	check_sphere(const GLUshape &shape, double r) :
+		pass(true), vert(0), prim(0), elts(0), r(r), mode(0)
 	{
+		primitive_count = shape.primitive_count();
+		vertex_count = shape.vertex_count();
 	}
 
 	bool pass;
@@ -17,8 +18,10 @@ public:
 	double r;
 	GLenum mode;
 
-protected:
-	virtual void emit_vertex(const GLUvec4 &position,
+	unsigned vertex_count;
+	unsigned primitive_count;
+
+	virtual void vertex(const GLUvec4 &position,
 				 const GLUvec4 &normal,
 				 const GLUvec4 &tangent,
 				 const GLUvec4 &tex_coord)
@@ -96,7 +99,7 @@ protected:
 		vert++;
 	}
 
-	virtual void emit_begin(GLenum mode)
+	virtual void begin_primitive(GLenum mode)
 	{
 		printf("prim %u: begin\n", prim);
 
@@ -107,7 +110,7 @@ protected:
 			pass = false;
 		}
 
-		if (prim == primitive_count()) {
+		if (prim == primitive_count) {
 			printf("prim %u: too many primitives\n",
 			       prim);
 			pass = false;
@@ -129,20 +132,20 @@ protected:
 		this->mode = mode;
 	}
 
-	virtual void emit_index(unsigned idx)
+	virtual void index(unsigned idx)
 	{
 		printf("prim %u, elt %u: %u\n", prim, elts, idx);
 
-		if (idx >= vertex_count()) {
+		if (idx >= vertex_count) {
 			printf("prim %u, elt %u: bad elt %u > %u\n",
-			       prim, elts, idx, vertex_count() - 1);
+			       prim, elts, idx, vertex_count - 1);
 			pass = false;
 		}
 
 		elts++;
 	}
 
-	virtual void emit_end(void)
+	virtual void end_primitive(void)
 	{
 		printf("prim %u: end\n", prim);
 
@@ -161,12 +164,13 @@ protected:
 int
 main(int argc, char **argv)
 {
-	check_sphere s(4.0, 5, 5);
+	GLUsphere s(4.0, 5, 5);
+	check_sphere c(s, 4.0);
 
-	s.generate();
-	assert(s.pass);
-	assert(s.vert == s.vertex_count());
-	assert(s.prim == s.primitive_count());
-	assert(s.elts == s.element_count());
+	s.generate(& c);
+	assert(c.pass);
+	assert(c.vert == s.vertex_count());
+	assert(c.prim == s.primitive_count());
+	assert(c.elts == s.element_count());
 	return 0;
 }
