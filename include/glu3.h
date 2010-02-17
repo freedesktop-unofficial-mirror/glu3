@@ -419,6 +419,28 @@ private:
 	unsigned slices;
 	unsigned stacks;
 };
+
+
+/**
+ * Shape generator that generates a cube.
+ */
+class GLUcube : public GLUshape {
+public:
+	/**
+	 * Construct a new cube shape generator
+	 *
+	 * \param radius  Distance from the center of the cube to the center
+	 *                of one of the axis-aligned faces.
+	 */
+	GLUcube(GLdouble radius);
+	virtual unsigned vertex_count(void) const;
+	virtual unsigned element_count(void) const;
+	virtual unsigned primitive_count(void) const;
+	virtual void generate(GLUshapeConsumer *consumer) const;
+
+private:
+	double radius;
+};
 #endif	
 
 #ifndef __cplusplus
