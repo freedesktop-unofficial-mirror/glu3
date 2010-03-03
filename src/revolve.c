@@ -30,7 +30,7 @@ revolve(const GLUvec4 *points, const GLUvec4 *normals, const float *u,
 	unsigned steps, float start_angle, float end_angle,
 	revolve_cb *cb, void *data)
 {
-	const float angle_step = (end_angle - start_angle) / (float) steps;
+	const float angle_step = (end_angle - start_angle) / (float) (steps - 1);
 	const GLUvec4 tangent = {{ 0.0, 0.0, 1.0, 0.0 }};
 	unsigned i;
 	unsigned j;
