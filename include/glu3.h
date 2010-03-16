@@ -211,12 +211,52 @@ struct GLUmat4 {
 
 struct GLUmat4Stack {
 	struct GLUmat4 stack[GLU_MAX_STACK_DEPTH];
-	unsigned top;
+	unsigned size;
 
 #ifdef __cplusplus
-	GLUmat4Stack() : top(0)
+	GLUmat4Stack() : size(0)
 	{
 		/* empty */
+	}
+
+	/**
+	 * Pushes the matrix stack down by one, duplicates the current matrix
+	 *
+	 * The matrix stack is pushed down by one position, and the matrix
+	 * previously at the top of the stack is copied to the new top
+	 * position.
+	 *
+	 * \sa pop, gluPusMatrix4m
+	 */
+	void push();
+
+	/**
+	 * Pops the matrix stack, replaces current matrix with previous top
+	 *
+	 * \sa push, gluPophMatrix4m
+	 */
+	void pop();
+
+	/**
+	 * Cast a matrix stack to a matrix
+	 *
+	 * This allows existing matrix operations to be performed on the
+	 * top of the matrix stack.
+	 */
+	GLUmat4 &operator() ()
+	{
+		return stack[0];
+	}
+
+	/**
+	 * Cast a constant matrix stack to a constant matrix
+	 *
+	 * This allows existing matrix operations to be performed on the
+	 * top of the matrix stack.
+	 */
+	const GLUmat4 &operator() () const
+	{
+		return stack[0];
 	}
 #endif	/* __cplusplus */
 };
@@ -709,6 +749,27 @@ GLboolean gluInverse4_4m(GLUmat4 *result, const GLUmat4 *m);
  * \end{tabular} \right)\f$
  */
 extern const GLUmat4 gluIdentityMatrix;
+
+/**
+ * Pushes the matrix stack down by one, duplicating the current matrix
+ *
+ * The matrix stack is pushed down by one position, and the matrix previously
+ * at the top of the stack is copied to the new top position.
+ *
+ * \param s  Matrix stack to be updated
+ *
+ * \sa GLUmat4Stack::push, gluPopMatrix4m
+ */
+extern void gluPushMatrix4m(struct GLUmat4Stack *s);
+
+/**
+ * Pops the matrix stack, replacing the current matrix with the previous top
+ *
+ * \param s  Matrix stack to be updated
+ *
+ * \sa GLUmat4Stack::pop, gluPushMatrix4m
+ */
+extern void gluPopMatrix4m(struct GLUmat4Stack *s);
 
 /**
  * Load a text file from disk
