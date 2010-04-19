@@ -342,11 +342,6 @@ public:
 	void orientation(bool outside);
 
 	/**
-	 * Select per-vertex or per-polygon normals
-	 */
-	void normals(bool per_vertex);
-
-	/**
 	 * Get the number of vertices in the shape
 	 *
 	 * This can be used in the constructor for derived classes, for
@@ -384,12 +379,11 @@ public:
 
 protected:
 	GLUshapeProducer(void) :
-	  normals_point_out(true), normals_per_vertex(true)
+	  normals_point_out(true)
 	{
 	}
 
 	bool normals_point_out;
-	bool normals_per_vertex;
 };
 
 
