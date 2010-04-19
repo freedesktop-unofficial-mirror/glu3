@@ -42,20 +42,20 @@ static void sphere_end_cb(void *data);
 /*@}*/
 
 /**
- * GLUsphere decorator to implement call-backs
+ * GLUsphereProducer decorator to implement call-backs
  *
- * To generate the sphere data, the \c GLUsphere class interfaces with various
- * C functions that use a call-back mechanism.  These call-backs are analogous
- * the \c emit_vertex, \c emit_begin, \c emit_index, and \c emit_end methods
- * that \c GLUsphere subclasses will provide.
+ * To generate the sphere data, the \c GLUsphereProducer class interfaces with
+ * various C functions that use a call-back mechanism.  These call-backs are
+ * analogous the \c emit_vertex, \c emit_begin, \c emit_index, and \c emit_end
+ * methods that \c GLUsphereProducer subclasses will provide.
  *
  * However, these methods are all \c protected.  As a result the non-class
  * call-back functions cannot call these methods unless they are \c friend
  * functions.  It is undesireable to expose the implementation detail in the
  * application-facing header file.  This can be worked around by creating a
- * dummy subclass of \c GLUsphere that only contains the \c friend function
- * declarations.  Pointers to \c GLUsphere objects can be cast to pointers to
- * \c GLUsphereFriend objects without side-effect.
+ * dummy subclass of \c GLUsphereProducer that only contains the \c friend
+ * function declarations.  Pointers to \c GLUsphereProducer objects can be
+ * cast to pointers to \c GLUsphereFriend objects without side-effect.
  *
  * This is arguably a mis-use of the "decorator" pattern, but it is the most
  * efficient way to do this.
@@ -75,7 +75,8 @@ class GLUconsumerFriend : public GLUshapeConsumer {
 };
 
 
-GLUsphere::GLUsphere(GLdouble radius, GLint slices, GLint stacks)
+GLUsphereProducer::GLUsphereProducer(GLdouble radius, GLint slices,
+				     GLint stacks)
 {
 	this->radius = radius;
 	this->slices = (slices < 4) ? 4 : (unsigned) slices;
@@ -84,7 +85,7 @@ GLUsphere::GLUsphere(GLdouble radius, GLint slices, GLint stacks)
 
 
 unsigned
-GLUsphere::vertex_count(void) const
+GLUsphereProducer::vertex_count(void) const
 {
 	/* Each line of vertices from the north pole to the south pole consists
 	 * of (stacks+1) vertices.  There are a total of (slices+1) of these
@@ -95,7 +96,7 @@ GLUsphere::vertex_count(void) const
 
 
 unsigned
-GLUsphere::primitive_count(void) const
+GLUsphereProducer::primitive_count(void) const
 {
 	/* For each slice there is a triangle strip from the north pole to the
 	 * south pole.
@@ -105,7 +106,7 @@ GLUsphere::primitive_count(void) const
 
 
 unsigned
-GLUsphere::element_count(void) const
+GLUsphereProducer::element_count(void) const
 {
 	/* Each slice is a triangle strip represented by 2 elements plus
 	 * 2 elements for each stack;
@@ -152,7 +153,7 @@ sphere_end_cb(void *data)
 
 
 void
-GLUsphere::generate(GLUshapeConsumer *consumer) const
+GLUsphereProducer::generate(GLUshapeConsumer *consumer) const
 {
 	generate_sphere(radius, slices, stacks,
 			normals_point_out,

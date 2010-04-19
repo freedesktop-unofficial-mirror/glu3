@@ -22,13 +22,13 @@
  */
 #include "glu3.h"
 
-GLUcube::GLUcube(double radius) :
+GLUcubeProducer::GLUcubeProducer(double radius) :
 	radius(radius)
 {
 }
 
 unsigned
-GLUcube::vertex_count(void) const
+GLUcubeProducer::vertex_count(void) const
 {
 	/* Due to differeing normals and texture coordinates, each face of the
 	 * cube has four unique vertices.  This means that each unique vertex
@@ -38,7 +38,7 @@ GLUcube::vertex_count(void) const
 }
 
 unsigned
-GLUcube::element_count(void) const
+GLUcubeProducer::element_count(void) const
 {
 	/* Each face is made up of two triangles.  All data is sent in a single
 	 * triangle list.
@@ -47,7 +47,7 @@ GLUcube::element_count(void) const
 }
 
 unsigned
-GLUcube::primitive_count(void) const
+GLUcubeProducer::primitive_count(void) const
 {
 	/* Each face is made up of two triangles.  All data is sent in a single
 	 * triangle list.
@@ -58,7 +58,7 @@ GLUcube::primitive_count(void) const
 #define Elements(a)  (sizeof(a) / sizeof(a[0]))
 
 void
-GLUcube::generate(GLUshapeConsumer *consumer) const
+GLUcubeProducer::generate(GLUshapeConsumer *consumer) const
 {
 	static const float p[] = {
 		+1.0,  1.0,  1.0, 1.0,

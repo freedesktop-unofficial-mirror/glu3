@@ -4,7 +4,7 @@
 
 class check_sphere : public GLUshapeConsumer {
 public:
-	check_sphere(const GLUshape &shape, double r) :
+	check_sphere(const GLUshapeProducer &shape, double r) :
 		pass(true), vert(0), prim(0), elts(0), r(r), mode(0)
 	{
 		primitive_count = shape.primitive_count();
@@ -164,7 +164,7 @@ public:
 int
 main(int argc, char **argv)
 {
-	GLUsphere s(4.0, 5, 5);
+	GLUsphereProducer s(4.0, 5, 5);
 	check_sphere c(s, 4.0);
 
 	s.generate(& c);
