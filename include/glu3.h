@@ -226,14 +226,14 @@ struct GLUmat4Stack {
 	 * previously at the top of the stack is copied to the new top
 	 * position.
 	 *
-	 * \sa pop, gluPusMatrix4m
+	 * \sa pop, gluPushMatrix4m
 	 */
 	void push();
 
 	/**
 	 * Pops the matrix stack, replaces current matrix with previous top
 	 *
-	 * \sa push, gluPophMatrix4m
+	 * \sa push, gluPopMatrix4m
 	 */
 	void pop();
 
