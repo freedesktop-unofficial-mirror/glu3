@@ -20,8 +20,7 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
  * DEALINGS IN THE SOFTWARE.
  */
-
-#include <glu3.h>
+#include "../include/glu3.h"
 #include <cmath>
 #include <cassert>
 
@@ -32,7 +31,7 @@ int main(int argc, char **argv)
 
 	GLUmat4Stack s;
 
-	GLUmat4(s) = gluIdentityMatrix;
+	s.top() = gluIdentityMatrix;
 	s.push();
 
 	s.pop();

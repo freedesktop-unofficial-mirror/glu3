@@ -238,28 +238,40 @@ struct GLUmat4Stack {
 	void pop();
 
 	/**
-	 * Cast a matrix stack to a matrix
+	 * Access top of matrix stack as a matrix
 	 *
 	 * This allows existing matrix operations to be performed on the
 	 * top of the matrix stack.
+	 *
+	 * \sa GLU_MATRIX_STACK_TOP
 	 */
-	GLUmat4 &operator() ()
+	GLUmat4 &top()
 	{
 		return stack[0];
 	}
 
 	/**
-	 * Cast a constant matrix stack to a constant matrix
+	 * Access top of matrix stack as a constant matrix
 	 *
 	 * This allows existing matrix operations to be performed on the
 	 * top of the matrix stack.
+	 *
+	 * \sa GLU_MATRIX_STACK_TOP
 	 */
-	const GLUmat4 &operator() () const
+	const GLUmat4 &top() const
 	{
 		return stack[0];
 	}
 #endif	/* __cplusplus */
 };
+
+
+/**
+ * Get a pointer to the matrix at the top of a matrix stack
+ *
+ * \sa GLUmat4Stack::top (C++)
+ */
+#define GLU_MATRIX_STACK_TOP(s)  (&(s)->stack[0])
 
 
 struct GLUarcball {
