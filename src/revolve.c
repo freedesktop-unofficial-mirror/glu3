@@ -20,8 +20,14 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
  * DEALINGS IN THE SOFTWARE.
  */
-
+#define _USE_MATH_DEFINES
+#include <stdlib.h>
+#include <math.h>
 #include "revolve.h"
+
+#ifndef M_PI
+#define M_PI 3.14159265358979323846
+#endif
 
 void
 revolve(const GLUvec4 *points, const GLUvec4 *normals, const float *u,
@@ -38,7 +44,7 @@ revolve(const GLUvec4 *points, const GLUvec4 *normals, const float *u,
 
 	for (i = 0; i < steps; i++) {
 		const float a = start_angle + (angle_step * i);
-		const float v = i / (steps - 1);
+		const float v = (float) i / (float) (steps - 1);
 		GLUmat4 r;
 
 		/* Generate a rotation matrix to rotate the position and the
