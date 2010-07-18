@@ -33,8 +33,6 @@
 #define M_PI 3.14159265358979323846
 #endif
 
-#define DEG2RAD(d) ((d) * M_PI / 180.0)
-
 const GLUmat4 gluIdentityMatrix = {
 	{
 		{ { 1.0f, 0.0f,  0.0f,  0.0f } },
@@ -193,8 +191,8 @@ void
 gluPerspective4f(GLUmat4 *result,
 		 GLfloat fovy, GLfloat aspect, GLfloat n, GLfloat f)
 {
-	const double sine = sin(DEG2RAD(fovy / 2.0));
-	const double cosine = cos(DEG2RAD(fovy / 2.0));
+	const double sine = sin(fovy / 2.0);
+	const double cosine = cos(fovy / 2.0);
 	const double sine_aspect = sine * aspect;
 	const double dz = f - n;
 

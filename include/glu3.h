@@ -661,7 +661,7 @@ void gluTranslate4v(GLUmat4 *result, const GLUvec4 *v);
  * Calculate a rotation matrix around an arbitrary axis
  *
  * \param axis  Axis, based at the origin, around which to rotate
- * \param angle Angle of rotation in degrees
+ * \param angle Angle of rotation in radians
  *
  * If the specificed axis is not unit length, the vector will be normalized.
  *
@@ -752,7 +752,7 @@ void gluFrustum6f(GLUmat4 *result, GLfloat left, GLfloat right, GLfloat bottom,
  * Calculate a perspective projection matrix
  *
  * \param result Storage for the resulting matrix.
- * \param fovy   Field-of-view in the Y direction
+ * \param fovy   Field-of-view in the Y direction, measured in radians
  * \param aspect The ratio of the size in the X direction to the size in the
  *               Y direction.  This is used to calculate the field-of-view in
  *               the X direction.
@@ -1099,7 +1099,7 @@ inline GLUmat4 gluTranslate(const GLUvec4 &v)
  * Calculate a rotation matrix around an arbitrary axis
  *
  * \param axis  Axis, based at the origin, around which to rotate
- * \param angle Angle of rotation in degrees
+ * \param angle Angle of rotation in radians
  *
  * If the specificed axis is not unit length, the vector will be normalized.
  *
