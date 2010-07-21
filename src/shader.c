@@ -139,6 +139,8 @@ gluInitializeCompiler(void)
 		GetProgramInfoLog = (PFNGLGETPROGRAMINFOLOGPROC)
 			GetShaderInfoLog;
 	}
+
+	return true;
 }
 
 
