@@ -136,7 +136,8 @@ gluInitializeCompiler(void)
 
 		GetShaderInfoLog = (PFNGLGETSHADERINFOLOGPROC)
 			GetProcAddress(glGetInfoLogARB);
-		GetProgramInfoLog = (PFNGLGETSHADERIVPROC) GetShaderInfoLog;
+		GetProgramInfoLog = (PFNGLGETPROGRAMINFOLOGPROC)
+			GetShaderInfoLog;
 	}
 }
 
