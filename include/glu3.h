@@ -40,6 +40,7 @@
 #include <stdbool.h>
 
 #define GLU3_VERSION_0_1
+#define GLU3_VERSION_0_9
 
 struct GLUmat4;
 
