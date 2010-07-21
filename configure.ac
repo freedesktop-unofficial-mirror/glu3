@@ -31,6 +31,7 @@ AC_TYPE_UINT8_T
 # Checks for library functions.
 AC_HEADER_STDC
 AC_CHECK_FUNCS(fopen_s)
+AC_CHECK_FUNCS(strtof)
 
 AC_ARG_WITH([winsys],
             [AS_HELP_STRING([--with-winsys],
