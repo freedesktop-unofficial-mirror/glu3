@@ -37,7 +37,7 @@
 #include <EGL/egl.h>
 #define GetProcAddress(x) eglGetProcAddress(#x)
 #elif defined(HAVE_WGL)
-#include <GL/wgl.h>
+#include <GL/wglext.h>
 #define GetProcAddress(x) wglGetProcAddress(#x)
 #else
 #define GetProcAddress(x) (x)
