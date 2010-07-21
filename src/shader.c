@@ -20,11 +20,11 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
  * DEALINGS IN THE SOFTWARE.
  */
-#include "config.h"
+#include "system.h"
 #include <stdlib.h>
 #include <string.h>
 #include <stdarg.h>
-#include <stdbool.h>
+#include "glu3.h"
 
 #define GL_GLEXT_PROTOTYPES
 #include <GL/gl.h>
