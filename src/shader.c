@@ -92,7 +92,7 @@ gluInitializeCompiler(void)
 			GetProcAddress(glGetProgramInfoLog);
 	} else {
 		const char *const extension_string = glGetString(GL_EXTENSIONS);
-		const unsigned len = strlen("GL_ARB_shader_objects");
+		const size_t len = strlen("GL_ARB_shader_objects");
 		const char *x;
 
 		x = extension_string;
