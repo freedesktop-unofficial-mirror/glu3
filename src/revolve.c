@@ -38,10 +38,16 @@ revolve(const GLUvec4 *points, const GLUvec4 *normals, const float *u,
 {
 	const float angle_step = (end_angle - start_angle) / (float) (steps - 1);
 	const GLUvec4 tangent = {{ 0.0, 0.0, 1.0, 0.0 }};
+	GLUvec4 p[64];
+	GLUvec4 n[64];
+	GLUvec4 t[64];
+	GLUvec4 uv[64];
+	unsigned idx;
 	unsigned i;
 	unsigned j;
 
 
+	idx = 0;
 	for (i = 0; i < steps; i++) {
 		const float a = start_angle + (angle_step * i);
 		const float v = (float) i / (float) (steps - 1);
@@ -54,23 +60,26 @@ revolve(const GLUvec4 *points, const GLUvec4 *normals, const float *u,
 		gluRotate4v(& r, axis, a);
 
 		for (j = 0; j < num_points; j++) {
-			GLUvec4 p;
-			GLUvec4 n;
-			GLUvec4 t;
-			GLUvec4 uv;
+			gluMult4m_4v(& p[idx], & r, & points[j]);
+			gluMult4m_4v(& n[idx], & r, & normals[j]);
+			gluMult4m_4v(& t[idx], & r, & tangent);
 
-			gluMult4m_4v(& p, & r, & points[j]);
-			gluMult4m_4v(& n, & r, & normals[j]);
-			gluMult4m_4v(& t, & r, & tangent);
+			uv[idx].values[0] = u[j];
+			uv[idx].values[1] = v;
+			uv[idx].values[2] = 0.0;
+			uv[idx].values[3] = 0.0;
 
-			uv.values[0] = u[j];
-			uv.values[1] = v;
-			uv.values[2] = 0.0;
-			uv.values[3] = 0.0;
+			idx++;
 
-			(*cb)(data, & p, & n, & t, & uv);
+			if (idx >= 64) {
+				(*cb)(data, p, n, t, uv, idx);
+				idx = 0;
+			}
 		}
 	}
+
+	if (idx > 0)
+		(*cb)(data, p, n, t, uv, idx);
 }
 
 

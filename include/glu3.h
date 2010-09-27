@@ -301,7 +301,7 @@ struct GLUarcball {
 class GLUshapeConsumer {
 public:
 	/**
-	 * Emit an individual vertex
+	 * Emit a batch of vertices
 	 *
 	 * \param position  Object-space position of the vertex.
 	 * \param normal    Object-space normal of the vertex.
@@ -309,11 +309,13 @@ public:
 	 * \param uv        Parameter-space position of the vertex.  The
 	 *                  per-vertex values will range from (0,0,0,0) to
 	 *                  (1, 1, 0, 0).
+	 * \param count     Number of vertices being emitted.
 	 */
-	virtual void vertex(const GLUvec4 &position,
-			    const GLUvec4 &normal,
-			    const GLUvec4 &tangent,
-			    const GLUvec4 &uv) = 0;
+	virtual void vertex_batch(const GLUvec4 *position,
+				  const GLUvec4 *normal,
+				  const GLUvec4 *tangent,
+				  const GLUvec4 *uv,
+				  unsigned count) = 0;
 
 	/**
 	 * Start a new indexed primitive.

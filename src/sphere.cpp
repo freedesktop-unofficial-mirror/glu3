@@ -114,11 +114,11 @@ GLUsphereProducer::element_count(void) const
 
 static void
 sphere_revolve_cb(void *data, const GLUvec4 *position, const GLUvec4 *normal,
-		  const GLUvec4 *tangent, const GLUvec4 *uv)
+		  const GLUvec4 *tangent, const GLUvec4 *uv, unsigned count)
 {
 	GLUconsumerFriend *c = (GLUconsumerFriend *) data;
 
-	c->vertex(*position, *normal, *tangent, *uv);
+	c->vertex_batch(position, normal, tangent, uv, count);
 }
 
 

@@ -60,15 +60,15 @@ GLUcubeProducer::primitive_count(void) const
 void
 GLUcubeProducer::generate(GLUshapeConsumer *consumer) const
 {
-	static const float p[] = {
-		+1.0,  1.0,  1.0, 1.0,
-		-1.0,  1.0,  1.0, 1.0,
-		+1.0, -1.0,  1.0, 1.0,
-		-1.0, -1.0,  1.0, 1.0,
-		+1.0,  1.0, -1.0, 1.0,
-		-1.0,  1.0, -1.0, 1.0,
-		+1.0, -1.0, -1.0, 1.0,
-		-1.0, -1.0, -1.0, 1.0,
+	static const GLUvec4 p[] = {
+		GLUvec4(+1.0,  1.0,  1.0, 1.0),
+		GLUvec4(-1.0,  1.0,  1.0, 1.0),
+		GLUvec4(+1.0, -1.0,  1.0, 1.0),
+		GLUvec4(-1.0, -1.0,  1.0, 1.0),
+		GLUvec4(+1.0,  1.0, -1.0, 1.0),
+		GLUvec4(-1.0,  1.0, -1.0, 1.0),
+		GLUvec4(+1.0, -1.0, -1.0, 1.0),
+		GLUvec4(-1.0, -1.0, -1.0, 1.0),
 	};
 
 #define X 0
@@ -112,54 +112,47 @@ GLUcubeProducer::generate(GLUshapeConsumer *consumer) const
 #undef P
 #undef V
 
-	unsigned i;
 
+	GLUvec4 pos[3 * Elements(p)];
+	GLUvec4 nrm[3 * Elements(p)];
+	GLUvec4 tng[3 * Elements(p)];
+	GLUvec4 uv[3 * Elements(p)];
+	unsigned j = 0;
 
-	for (i = 0; i < Elements(p); i += 4) {
-		GLUvec4 n;
-		GLUvec4 t;
-		GLUvec4 uv;
+	for (unsigned i = 0; i < Elements(p); i++) {
+		pos[j] = p[i];
+		nrm[j] = GLUvec4(p[i].values[0], 0.0, 0.0, 0.0);
+		tng[j] = GLUvec4(0.0, 0.0, p[i].values[0], 0.0);
+		uv[j]  = GLUvec4((p[i].values[2] + 1.0) * 0.5,
+				 (p[i].values[1] + 1.0) * 0.5,
+				 0.0,
+				 0.0);
+		j++;
 
-		n = GLUvec4(p[i + 0], 0.0, 0.0, 0.0);
-		t = GLUvec4(0.0, 0.0, p[i + 0], 0.0);
-		uv = GLUvec4((p[i + 2] + 1.0) * 0.5,
-			     (p[i + 1] + 1.0) * 0.5,
-			     0.0,
-			     0.0);
-		consumer->vertex(GLUvec4(p[i + 0], p[i + 1], 
-					 p[i + 2], p[i + 3]),
-				 n,
-				 t,
-				 uv);
+		pos[j] = p[i];
+		nrm[j] = GLUvec4(0.0, p[i].values[1], 0.0, 0.0);
+		tng[j] = GLUvec4(p[i].values[1], 0.0, 0.0, 0.0);
+		uv[j]  = GLUvec4((p[i].values[0] + 1.0) * 0.5,
+				 (p[i].values[2] + 1.0) * 0.5,
+				 0.0,
+				 0.0);
+		j++;
 
-		n = GLUvec4(0.0, p[i + 1], 0.0, 0.0);
-		t = GLUvec4(p[i + 1], 0.0, 0.0, 0.0);
-		uv = GLUvec4((p[i + 0] + 1.0) * 0.5,
-			     (p[i + 2] + 1.0) * 0.5,
-			     0.0,
-			     0.0);
-		consumer->vertex(GLUvec4(p[i + 0], p[i + 1],
-					 p[i + 2], p[i + 3]),
-				 n,
-				 t,
-				 uv);
-
-		n = GLUvec4(0.0, 0.0, p[i + 2], 0.0);
-		t = GLUvec4(p[i + 2], 0.0, 0.0, 0.0);
-		uv = GLUvec4((p[i + 0] + 1.0) * 0.5,
-			     (p[i + 1] + 1.0) * 0.5,
-			     0.0,
-			     0.0);
-		consumer->vertex(GLUvec4(p[i + 0], p[i + 1],
-					 p[i + 2], p[i + 3]),
-				 n,
-				 t,
-				 uv);
+		pos[j] = p[i];
+		nrm[j] = GLUvec4(0.0, 0.0, p[i].values[2], 0.0);
+		tng[j] = GLUvec4(p[i].values[2], 0.0, 0.0, 0.0);
+		uv[j]  = GLUvec4((p[i].values[0] + 1.0) * 0.5,
+				 (p[i].values[1] + 1.0) * 0.5,
+				 0.0,
+				 0.0);
+		j++;
 	}
+
+	consumer->vertex_batch(pos, nrm, tng, uv, j);
 
 	consumer->begin_primitive(GL_TRIANGLES);
 
-	for (i = 0; i < Elements(elts); i++)
+	for (unsigned i = 0; i < Elements(elts); i++)
 		consumer->index(elts[i]);
 	
 	consumer->end_primitive();

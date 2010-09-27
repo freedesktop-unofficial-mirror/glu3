@@ -30,7 +30,7 @@ extern "C" {
 
 typedef void (revolve_cb)(void *data, const GLUvec4 *position,
 			  const GLUvec4 *normal, const GLUvec4 *tangent,
-			  const GLUvec4 *uv);
+			  const GLUvec4 *uv, unsigned count);
 
 /**
  * Generate a surface of revolution
