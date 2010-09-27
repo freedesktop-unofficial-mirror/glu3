@@ -98,10 +98,7 @@ GLUsphereProducer::vertex_count(void) const
 unsigned
 GLUsphereProducer::primitive_count(void) const
 {
-	/* For each slice there is a triangle strip from the north pole to the
-	 * south pole.
-	 */
-	return slices;
+	return 1;
 }
 
 

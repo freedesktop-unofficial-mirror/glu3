@@ -30,20 +30,32 @@ generate_triangle_mesh(unsigned rows, unsigned cols, unsigned width,
 		       mesh_end_cb *end_cb, 
 		       void *data)
 {
-	unsigned i;
-	unsigned j;
+	int i;
+	int j;
 
+	(*begin_cb)(data, GL_TRIANGLE_STRIP);
 	for (i = 0; i < rows; i++) {
-		(*begin_cb)(data, GL_TRIANGLE_STRIP);
+		if ((i & 1) == 0) {
+			for (j = 0; j < cols; j++) {
+				const unsigned e0 = ((i + 0) * width) + j;
+				const unsigned e1 = ((i + 1) * width) + j;
 
-		for (j = 0; j < cols; j++) {
-			const unsigned e0 = ((i + 0) * width) + j;
-			const unsigned e1 = ((i + 1) * width) + j;
+				(*index_cb)(data, e0);
+				(*index_cb)(data, e1);
+			}
 
-			(*index_cb)(data, e0);
-			(*index_cb)(data, e1);
+			(*index_cb)(data, (width - 1) + ((i + 0) * width));
+		} else {
+			for (j = cols - 1; j >= 0; j--) {
+				const unsigned e0 = ((i + 0) * width) + j;
+				const unsigned e1 = ((i + 1) * width) + j;
+
+				(*index_cb)(data, e0);
+				(*index_cb)(data, e1);
+			}
+
+			(*index_cb)(data, (i + 0) * width);
 		}
-
-		(*end_cb)(data);
 	}
+	(*end_cb)(data);
 }
