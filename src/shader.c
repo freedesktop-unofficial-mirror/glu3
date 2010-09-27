@@ -227,7 +227,7 @@ gluAttachShaders(GLuint prog, GLuint shader, ...)
 
 	AttachShader(prog, shader);
 
-	va_start(args, prog);
+	va_start(args, shader);
 
 	while (true) {
 		GLuint s = va_arg(args, GLuint);
@@ -249,7 +249,7 @@ gluBindAttributes(GLuint prog, const char *name, GLuint location, ...)
 
 	BindAttribLocation(prog, location, name);
 
-	va_start(args, prog);
+	va_start(args, location);
 
 	while (true) {
 		const char *name = va_arg(args, char *);
