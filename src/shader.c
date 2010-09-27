@@ -32,7 +32,7 @@
 
 #if defined(HAVE_GLX)
 #include <GL/glx.h>
-#define GetProcAddress(x) glXGetProcAddress(#x)
+#define GetProcAddress(x) glXGetProcAddress((const GLubyte *) #x)
 #elif defined(HAVE_EGL)
 #include <EGL/egl.h>
 #define GetProcAddress(x) eglGetProcAddress(#x)
@@ -63,7 +63,8 @@ gluInitializeCompiler(void)
 	 * This will either be from OpenGL 2.0+ (or OpenGL ES 2.0) or from
 	 * GL_ARB_shader_objects. 
 	 */
-	const char *const version_string = glGetString(GL_VERSION);
+	const char *const version_string =
+		(const char *) glGetString(GL_VERSION);
 	float version = strtof(version_string, NULL);
 
 	if (version >= 2.0f) {
@@ -91,7 +92,8 @@ gluInitializeCompiler(void)
 		GetProgramInfoLog = (PFNGLGETPROGRAMINFOLOGPROC)
 			GetProcAddress(glGetProgramInfoLog);
 	} else {
-		const char *const extension_string = glGetString(GL_EXTENSIONS);
+		const char *const extension_string =
+			(const char *) glGetString(GL_EXTENSIONS);
 		const size_t len = strlen("GL_ARB_shader_objects");
 		const char *x;
 
