@@ -321,8 +321,10 @@ public:
 	 * Start a new indexed primitive.
 	 *
 	 * \param mode  GL primitive drawing mode used for this primitive
+	 * \param count Number of indices that will be produced for this
+	 *              primitive.
 	 */
-	virtual void begin_primitive(GLenum mode) = 0;
+	virtual void begin_primitive(GLenum mode, unsigned count) = 0;
 
 	/**
 	 * Emit an element index for drawing

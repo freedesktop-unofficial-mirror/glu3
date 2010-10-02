@@ -183,7 +183,7 @@ GLUcubeProducer::generate(GLUshapeConsumer *consumer) const
 		CB_BUFFER_MAKE_EMPTY(buf);
 	}
 
-	consumer->begin_primitive(GL_TRIANGLES);
+	consumer->begin_primitive(GL_TRIANGLES, Elements(elts));
 
 	for (unsigned i = 0; i < Elements(elts); i++)
 		consumer->index(elts[i]);

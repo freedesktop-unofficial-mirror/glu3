@@ -34,7 +34,7 @@ static void sphere_revolve_cb(void *data,
 			      const GLUvec4 *tangent,
 			      const GLUvec4 *uv);
 
-static void sphere_begin_cb(void *data, GLenum mode);
+static void sphere_begin_cb(void *data, GLenum mode, unsigned count);
 
 static void sphere_index_cb(void *data, unsigned index);
 
@@ -67,7 +67,7 @@ class GLUconsumerFriend : public GLUshapeConsumer {
 				      const GLUvec4 *tangent,
 				      const GLUvec4 *uv);
 
-	friend void sphere_begin_cb(void *data, GLenum mode);
+	friend void sphere_begin_cb(void *data, GLenum mode, unsigned count);
 
 	friend void sphere_index_cb(void *data, unsigned index);
 
@@ -123,11 +123,11 @@ sphere_revolve_cb(void *data, const GLUvec4 *position, const GLUvec4 *normal,
 
 
 static void
-sphere_begin_cb(void *data, GLenum mode)
+sphere_begin_cb(void *data, GLenum mode, unsigned count)
 {
 	GLUconsumerFriend *c = (GLUconsumerFriend *) data;
 
-	c->begin_primitive(mode);
+	c->begin_primitive(mode, count);
 }
 
 

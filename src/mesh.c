@@ -33,7 +33,7 @@ generate_triangle_mesh(unsigned rows, unsigned cols, unsigned width,
 	int i;
 	int j;
 
-	(*begin_cb)(data, GL_TRIANGLE_STRIP);
+	(*begin_cb)(data, GL_TRIANGLE_STRIP, rows * ((2 * cols) + 1));
 	for (i = 0; i < rows; i++) {
 		if ((i & 1) == 0) {
 			for (j = 0; j < cols; j++) {
