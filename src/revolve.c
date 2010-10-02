@@ -34,20 +34,14 @@ revolve(const GLUvec4 *points, const GLUvec4 *normals, const float *u,
 	unsigned num_points, 
 	const GLUvec4 *axis,
 	unsigned steps, float start_angle, float end_angle,
-	revolve_cb *cb, void *data)
+	revolve_cb *cb, void *data, struct cb_buffer *buf)
 {
 	const float angle_step = (end_angle - start_angle) / (float) (steps - 1);
 	const GLUvec4 tangent = {{ 0.0, 0.0, 1.0, 0.0 }};
-	GLUvec4 p[64];
-	GLUvec4 n[64];
-	GLUvec4 t[64];
-	GLUvec4 uv[64];
-	unsigned idx;
 	unsigned i;
 	unsigned j;
 
 
-	idx = 0;
 	for (i = 0; i < steps; i++) {
 		const float a = start_angle + (angle_step * i);
 		const float v = (float) i / (float) (steps - 1);
@@ -60,33 +54,36 @@ revolve(const GLUvec4 *points, const GLUvec4 *normals, const float *u,
 		gluRotate4v(& r, axis, a);
 
 		for (j = 0; j < num_points; j++) {
-			gluMult4m_4v(& p[idx], & r, & points[j]);
-			gluMult4m_4v(& n[idx], & r, & normals[j]);
-			gluMult4m_4v(& t[idx], & r, & tangent);
+			gluMult4m_4v(& buf->pos[buf->used], & r, & points[j]);
+			gluMult4m_4v(& buf->nrm[buf->used], & r, & normals[j]);
+			gluMult4m_4v(& buf->tng[buf->used], & r, & tangent);
 
-			uv[idx].values[0] = u[j];
-			uv[idx].values[1] = v;
-			uv[idx].values[2] = 0.0;
-			uv[idx].values[3] = 0.0;
+			buf->uv[buf->used].values[0] = u[j];
+			buf->uv[buf->used].values[1] = v;
+			buf->uv[buf->used].values[2] = 0.0;
+			buf->uv[buf->used].values[3] = 0.0;
 
-			idx++;
+			buf->used++;
 
-			if (idx >= 64) {
-				(*cb)(data, p, n, t, uv, idx);
-				idx = 0;
+			if (CB_BUFFER_IS_FULL(*buf)) {
+				(*cb)(data, buf->pos, buf->nrm, buf->tng,
+				      buf->uv, buf->used);
+				CB_BUFFER_MAKE_EMPTY(*buf);
 			}
 		}
 	}
 
-	if (idx > 0)
-		(*cb)(data, p, n, t, uv, idx);
+	if (!CB_BUFFER_IS_EMPTY(*buf)) {
+		(*cb)(data, buf->pos, buf->nrm, buf->tng, buf->uv, buf->used);
+		CB_BUFFER_MAKE_EMPTY(*buf);
+	}
 }
 
 
 void
 generate_sphere(double radius, unsigned slices, unsigned stacks,
 		_Bool normals_point_out,
-		revolve_cb *cb, void *data)
+		revolve_cb *cb, void *data, struct cb_buffer *buf)
 {
 	const GLUvec4 y_axis = {{ 0.0, 1.0, 0.0, 0.0 }};
 	GLUvec4 *positions;
@@ -127,5 +124,5 @@ generate_sphere(double radius, unsigned slices, unsigned stacks,
 	 * order to be drawn using triangle strips with back-face culling.
 	 */
 	revolve(positions, normals, u, stacks + 1, & y_axis,
-		slices + 1, 2.0 * M_PI, 0.0, cb, data);
+		slices + 1, 2.0 * M_PI, 0.0, cb, data, buf);
 }

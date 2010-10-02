@@ -333,6 +333,31 @@ public:
 	 * End an index primitive previously started with begin_primitive
 	 */
 	virtual void end_primitive(void) = 0;
+
+	/**
+	 * Buffer storage for vertex data
+	 *
+	 * During production of vertices, data will be stored in any buffers
+	 * supplied here.  Data for buffers not supplied here (i.e., buffers
+	 * that have \c NULL pointers) will still be supplied to the
+	 * \c vertex_batch method.  These buffers will only be used if
+	 * \c vertex_count is non-zero.
+	 *
+	 * In many cases this may allow simplification of the \c vertex_batch
+	 * method.  If the application wants non-interleaved data stored as
+	 * sets of four \c GLfloat values for each channel, pointers to
+	 * application allocated buffers (or mapped vertex buffer objects) can
+	 * be supplied here.  The \c vertex_batch method may then be a no-op.
+	 */	
+	/*@{*/
+	GLUvec4 *position;        /**< Optional buffer for position data. */
+	GLUvec4 *normal;          /**< Optional buffer for normal data. */
+	GLUvec4 *tangent;         /**< Optional buffer for tangent data. */
+	GLUvec4 *uv;              /**< Optional buffer for UV data. */
+	unsigned vertex_count;    /**< Number of GLUvec4 elements pointed to by
+				   * each non- \c NULL pointer.
+				   */
+	/*@}*/
 };
 
 

@@ -21,6 +21,7 @@
  * DEALINGS IN THE SOFTWARE.
  */
 #include "glu3.h"
+#include "buffer.h"
 
 GLUcubeProducer::GLUcubeProducer(double radius) :
 	radius(radius)
@@ -117,38 +118,70 @@ GLUcubeProducer::generate(GLUshapeConsumer *consumer) const
 	GLUvec4 nrm[3 * Elements(p)];
 	GLUvec4 tng[3 * Elements(p)];
 	GLUvec4 uv[3 * Elements(p)];
-	unsigned j = 0;
+	cb_buffer buf;
 
-	for (unsigned i = 0; i < Elements(p); i++) {
-		pos[j] = p[i];
-		nrm[j] = GLUvec4(p[i].values[0], 0.0, 0.0, 0.0);
-		tng[j] = GLUvec4(0.0, 0.0, p[i].values[0], 0.0);
-		uv[j]  = GLUvec4((p[i].values[2] + 1.0) * 0.5,
-				 (p[i].values[1] + 1.0) * 0.5,
-				 0.0,
-				 0.0);
-		j++;
-
-		pos[j] = p[i];
-		nrm[j] = GLUvec4(0.0, p[i].values[1], 0.0, 0.0);
-		tng[j] = GLUvec4(p[i].values[1], 0.0, 0.0, 0.0);
-		uv[j]  = GLUvec4((p[i].values[0] + 1.0) * 0.5,
-				 (p[i].values[2] + 1.0) * 0.5,
-				 0.0,
-				 0.0);
-		j++;
-
-		pos[j] = p[i];
-		nrm[j] = GLUvec4(0.0, 0.0, p[i].values[2], 0.0);
-		tng[j] = GLUvec4(p[i].values[2], 0.0, 0.0, 0.0);
-		uv[j]  = GLUvec4((p[i].values[0] + 1.0) * 0.5,
-				 (p[i].values[1] + 1.0) * 0.5,
-				 0.0,
-				 0.0);
-		j++;
+	if (consumer->vertex_count > 0) {
+		cb_buffer_init(&buf,
+			       consumer->position,
+			       consumer->normal,
+			       consumer->tangent,
+			       consumer->uv,
+			       consumer->vertex_count);
+	} else {
+		cb_buffer_init(&buf, pos, nrm, tng, uv, 3 * Elements(p));
 	}
 
-	consumer->vertex_batch(pos, nrm, tng, uv, j);
+	for (unsigned i = 0; i < Elements(p); i++) {
+		CB_BUFFER_APPEND(buf,
+				 p[i],
+				 GLUvec4(p[i].values[0], 0.0, 0.0, 0.0),
+				 GLUvec4(0.0, 0.0, p[i].values[0], 0.0),
+				 GLUvec4((p[i].values[2] + 1.0) * 0.5,
+					 (p[i].values[1] + 1.0) * 0.5,
+					 0.0,
+					 0.0));
+		if (CB_BUFFER_IS_FULL(buf)) {
+			consumer->vertex_batch(buf.pos, buf.nrm, buf.tng,
+					       buf.uv, buf.used);
+			CB_BUFFER_MAKE_EMPTY(buf);
+		}
+
+
+		CB_BUFFER_APPEND(buf,
+				 p[i],
+				 GLUvec4(0.0, p[i].values[1], 0.0, 0.0),
+				 GLUvec4(p[i].values[1], 0.0, 0.0, 0.0),
+				 GLUvec4((p[i].values[0] + 1.0) * 0.5,
+					 (p[i].values[2] + 1.0) * 0.5,
+					 0.0,
+					 0.0));
+		if (CB_BUFFER_IS_FULL(buf)) {
+			consumer->vertex_batch(buf.pos, buf.nrm, buf.tng,
+					       buf.uv, buf.used);
+			CB_BUFFER_MAKE_EMPTY(buf);
+		}
+
+
+		CB_BUFFER_APPEND(buf,
+				 p[i],
+				 GLUvec4(0.0, 0.0, p[i].values[2], 0.0),
+				 GLUvec4(p[i].values[2], 0.0, 0.0, 0.0),
+				 GLUvec4((p[i].values[0] + 1.0) * 0.5,
+					 (p[i].values[1] + 1.0) * 0.5,
+					 0.0,
+					 0.0));
+		if (CB_BUFFER_IS_FULL(buf)) {
+			consumer->vertex_batch(buf.pos, buf.nrm, buf.tng,
+					       buf.uv, buf.used);
+			CB_BUFFER_MAKE_EMPTY(buf);
+		}
+	}
+
+	if (!CB_BUFFER_IS_EMPTY(buf)) {
+		consumer->vertex_batch(buf.pos, buf.nrm, buf.tng, buf.uv,
+				       buf.used);
+		CB_BUFFER_MAKE_EMPTY(buf);
+	}
 
 	consumer->begin_primitive(GL_TRIANGLES);
 

@@ -152,9 +152,21 @@ sphere_end_cb(void *data)
 void
 GLUsphereProducer::generate(GLUshapeConsumer *consumer) const
 {
+	GLUvec4 data[4 * 16];
+	cb_buffer buf;
+
+	if (consumer->vertex_count == 0) {
+		cb_buffer_init(&buf, &data[0], &data[16], &data[32],
+			       &data[48], 16);
+	} else {
+		cb_buffer_init(&buf, consumer->position, consumer->normal,
+			       consumer->tangent, consumer->uv,
+			       consumer->vertex_count);
+	}
+
 	generate_sphere(radius, slices, stacks,
 			normals_point_out,
-			sphere_revolve_cb, (void *) consumer);
+			sphere_revolve_cb, (void *) consumer, &buf);
 
 	generate_triangle_mesh(slices, stacks + 1, stacks + 1,
 			       sphere_begin_cb,

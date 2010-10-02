@@ -23,6 +23,7 @@
 
 #include "system.h"
 #include "glu3.h"
+#include "buffer.h"
 
 #if defined(__cplusplus)
 extern "C" {
@@ -61,11 +62,12 @@ revolve(const GLUvec4 *points, const GLUvec4 *normals, const float *u,
 	unsigned num_points, 
 	const GLUvec4 *axis,
 	unsigned steps, float start_angle, float end_angle,
-	revolve_cb *cb, void *data);
+	revolve_cb *cb, void *data, struct cb_buffer *buf);
 
 extern void
 generate_sphere(double radius, unsigned slices, unsigned stacks,
-		bool normals_point_out, revolve_cb *cb, void *data);
+		bool normals_point_out, revolve_cb *cb, void *data,
+		struct cb_buffer *buf);
 
 #ifdef __cplusplus
 };
