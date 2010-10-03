@@ -25,37 +25,30 @@
 #include "mesh.h"
 
 /**
- * \name Call-back functions for sphere generation routine
+ * Call-back function for sphere generation routine
  */
-/*@{*/
 static void sphere_revolve_cb(void *data,
 			      const GLUvec4 *position,
 			      const GLUvec4 *normal,
 			      const GLUvec4 *tangent,
-			      const GLUvec4 *uv);
-
-static void sphere_begin_cb(void *data, GLenum mode, unsigned count);
-
-static void sphere_index_cb(void *data, const unsigned *index, unsigned count);
-
-static void sphere_end_cb(void *data);
-/*@}*/
+			      const GLUvec4 *uv,
+			      unsigned count);
 
 /**
  * GLUsphereProducer decorator to implement call-backs
  *
  * To generate the sphere data, the \c GLUsphereProducer class interfaces with
- * various C functions that use a call-back mechanism.  These call-backs are
- * analogous the \c emit_vertex, \c emit_begin, \c emit_index, and \c emit_end
- * methods that \c GLUsphereProducer subclasses will provide.
+ * a C functions that uses a call-back mechanism.  This call-backs is
+ * analogous to \c vertex_batch method that \c GLUshapeConsumer subclasses
+ * will provide.
  *
- * However, these methods are all \c protected.  As a result the non-class
- * call-back functions cannot call these methods unless they are \c friend
- * functions.  It is undesireable to expose the implementation detail in the
- * application-facing header file.  This can be worked around by creating a
- * dummy subclass of \c GLUsphereProducer that only contains the \c friend
- * function declarations.  Pointers to \c GLUsphereProducer objects can be
- * cast to pointers to \c GLUsphereFriend objects without side-effect.
+ * However, this method is \c protected.  As a result the non-class call-back
+ * functions cannot call this method unless it is a \c friend function.  It is
+ * undesireable to expose this implementation detail in the application-facing
+ * header file.  This can be worked around by creating a dummy subclass of \c
+ * GLUshapeConsumer that only contains the \c friend function declaration.
+ * Pointers to \c GLUshapeConsumer objects can be cast to pointers to
+ * \c GLUconsumerFriend objects without side-effect.
  *
  * This is arguably a mis-use of the "decorator" pattern, but it is the most
  * efficient way to do this.
@@ -65,22 +58,19 @@ class GLUconsumerFriend : public GLUshapeConsumer {
 				      const GLUvec4 *position,
 				      const GLUvec4 *normal,
 				      const GLUvec4 *tangent,
-				      const GLUvec4 *uv);
-
-	friend void sphere_begin_cb(void *data, GLenum mode, unsigned count);
-
-	friend void sphere_index_cb(void *data, unsigned index);
-
-	friend void sphere_end_cb(void *data);
+				      const GLUvec4 *uv,
+				      unsigned count);
 };
 
 
 GLUsphereProducer::GLUsphereProducer(GLdouble radius, GLint slices,
 				     GLint stacks)
+  : GLUmeshProducer(slices, stacks + 1, stacks + 1)
 {
 	this->radius = radius;
-	this->slices = (slices < 4) ? 4 : (unsigned) slices;
-	this->stacks = (stacks < 4) ? 4 : (unsigned) stacks;
+	this->rows = (slices < 4) ? 4 : (unsigned) slices;
+	this->columns = (stacks < 3) ? 4 : (unsigned) (stacks + 1);
+	this->width = this->columns;
 }
 
 
@@ -91,24 +81,8 @@ GLUsphereProducer::vertex_count(void) const
 	 * of (stacks+1) vertices.  There are a total of (slices+1) of these
 	 * lines of vertices.
 	 */
-	return (slices + 1) * (stacks + 1);
-}
-
-
-unsigned
-GLUsphereProducer::primitive_count(void) const
-{
-	return 1;
-}
-
-
-unsigned
-GLUsphereProducer::element_count(void) const
-{
-	/* Each slice is a triangle strip represented by 2 elements plus
-	 * 2 elements for each stack;
-	 */
-	return slices * (2 * (stacks + 1));
+	
+	return (this->rows + 1) * (this->columns);
 }
 
 
@@ -119,33 +93,6 @@ sphere_revolve_cb(void *data, const GLUvec4 *position, const GLUvec4 *normal,
 	GLUconsumerFriend *c = (GLUconsumerFriend *) data;
 
 	c->vertex_batch(position, normal, tangent, uv, count);
-}
-
-
-static void
-sphere_begin_cb(void *data, GLenum mode, unsigned count)
-{
-	GLUconsumerFriend *c = (GLUconsumerFriend *) data;
-
-	c->begin_primitive(mode, count);
-}
-
-
-static void
-sphere_index_cb(void *data, const unsigned *index, unsigned count)
-{
-	GLUconsumerFriend *c = (GLUconsumerFriend *) data;
-
-	c->index_batch(index, count);
-}
-
-
-static void
-sphere_end_cb(void *data)
-{
-	GLUconsumerFriend *c = (GLUconsumerFriend *) data;
-
-	c->end_primitive();
 }
 
 
@@ -164,13 +111,9 @@ GLUsphereProducer::generate(GLUshapeConsumer *consumer) const
 			       consumer->vertex_count);
 	}
 
-	generate_sphere(radius, slices, stacks,
-			normals_point_out,
+	generate_sphere(this->radius, this->rows, this->columns - 1,
+			this->normals_point_out,
 			sphere_revolve_cb, (void *) consumer, &buf);
 
-	generate_triangle_mesh(slices, stacks + 1, stacks + 1,
-			       sphere_begin_cb,
-			       sphere_index_cb,
-			       sphere_end_cb,
-			       (void *) consumer);
+	GLUmeshProducer::generate(consumer);
 }

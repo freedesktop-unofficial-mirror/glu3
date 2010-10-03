@@ -444,9 +444,42 @@ protected:
 
 
 /**
+ * Shape generator that generates indices for an NxM mesh
+ *
+ * This shape producer does \b not generate any vertices.  It is a utility
+ * producer that generates the indices required to render an NxM mesh.
+ */
+class GLUmeshProducer : public GLUshapeProducer {
+public:
+	/**
+	 * Construct a new mesh shape generator
+	 *
+	 * \param rows    Number of rows in the mesh
+	 * \param columns Number of columns in the mesh
+	 * \param width   Total width of the underlying mesh
+	 */
+	GLUmeshProducer(unsigned rows, unsigned columns, unsigned width)
+		: rows(rows), columns(columns), width(width)
+	{
+		/* empty */
+	}
+
+	virtual unsigned vertex_count(void) const;
+	virtual unsigned element_count(void) const;
+	virtual unsigned primitive_count(void) const;
+	virtual void generate(GLUshapeConsumer *consumer) const;
+
+protected:
+	unsigned rows;
+	unsigned columns;
+	unsigned width;
+};
+
+
+/**
  * Shape generator that generates a sphere.
  */
-class GLUsphereProducer : public GLUshapeProducer {
+class GLUsphereProducer : public GLUmeshProducer {
 public:
 	/**
 	 * Construct a new sphere shape generator
@@ -461,14 +494,10 @@ public:
 	 */
 	GLUsphereProducer(GLdouble radius, GLint slices, GLint stacks);
 	virtual unsigned vertex_count(void) const;
-	virtual unsigned element_count(void) const;
-	virtual unsigned primitive_count(void) const;
 	virtual void generate(GLUshapeConsumer *consumer) const;
 
 private:
 	double radius;
-	unsigned slices;
-	unsigned stacks;
 };
 
 

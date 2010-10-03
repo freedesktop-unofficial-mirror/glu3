@@ -25,55 +25,69 @@
 
 #define Elements(a)  (sizeof(a) / sizeof(a[0]))
 
-#define EMIT_ELT(e)					\
-	do {						\
-		elts[count] = (e);			\
-		count++;				\
-		if (count >= Elements(elts)) {		\
-			(*index_cb)(data, elts, count);	\
-			count = 0;			\
-		}					\
+unsigned
+GLUmeshProducer::vertex_count(void) const
+{
+	return 0;
+}
+
+unsigned
+GLUmeshProducer::element_count(void) const
+{
+	return this->rows * (2 * (this->columns + 1));
+}
+
+unsigned
+GLUmeshProducer::primitive_count(void) const
+{
+	return 1;
+}
+
+#define EMIT_ELT(e)						\
+	do {							\
+		elts[count] = (e);				\
+		count++;					\
+		if (count >= Elements(elts)) {			\
+			consumer->index_batch(elts, count);	\
+			count = 0;				\
+		}						\
 	} while (0)
 
 void
-generate_triangle_mesh(unsigned rows, unsigned cols, unsigned width, 
-		       mesh_begin_cb *begin_cb, 
-		       mesh_index_cb *index_cb, 
-		       mesh_end_cb *end_cb, 
-		       void *data)
+GLUmeshProducer::generate(GLUshapeConsumer *consumer) const
 {
 	unsigned elts[64];
 	unsigned count = 0;
 	unsigned i;
 	int j;
 
-	(*begin_cb)(data, GL_TRIANGLE_STRIP, rows * ((2 * cols) + 1));
-	for (i = 0; i < rows; i++) {
+	consumer->begin_primitive(GL_TRIANGLE_STRIP, this->element_count());
+	for (i = 0; i < this->rows; i++) {
 		if ((i & 1) == 0) {
-			for (j = 0; j < (int)cols; j++) {
-				const unsigned e0 = ((i + 0) * width) + j;
-				const unsigned e1 = ((i + 1) * width) + j;
+			for (j = 0; j < (int)this->columns; j++) {
+				const unsigned e0 = ((i + 0) * this->width) + j;
+				const unsigned e1 = ((i + 1) * this->width) + j;
 
 				EMIT_ELT(e0);
 				EMIT_ELT(e1);
 			}
 
-			EMIT_ELT((width - 1) + ((i + 0) * width));
+			EMIT_ELT((this->width - 1) + ((i + 0) * this->width));
 		} else {
-			for (j = cols - 1; j >= 0; j--) {
-				const unsigned e0 = ((i + 0) * width) + j;
-				const unsigned e1 = ((i + 1) * width) + j;
+			for (j = this->columns - 1; j >= 0; j--) {
+				const unsigned e0 = ((i + 0) * this->width) + j;
+				const unsigned e1 = ((i + 1) * this->width) + j;
 
 				EMIT_ELT(e0);
 				EMIT_ELT(e1);
 			}
 
-			EMIT_ELT((i + 0) * width);
+			EMIT_ELT((i + 0) * this->width);
 		}
 	}
 
 	if (count != 0)
-		(*index_cb)(data, elts, count);
+		consumer->index_batch(elts, count);
 
-	(*end_cb)(data);
+	consumer->end_primitive();
 }
