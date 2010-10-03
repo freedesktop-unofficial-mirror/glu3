@@ -303,6 +303,10 @@ public:
 	/**
 	 * Emit a batch of vertices
 	 *
+	 * The default implementation is a no-op.  The assumption is that the
+	 * object's \c position, \c normal, \c tangent, and \c uv  are properly
+	 * filled in to receive data from the producer.
+	 *
 	 * \param position  Object-space position of the vertex.
 	 * \param normal    Object-space normal of the vertex.
 	 * \param tangent   Object-space tangent of the vertex.
@@ -315,7 +319,7 @@ public:
 				  const GLUvec4 *normal,
 				  const GLUvec4 *tangent,
 				  const GLUvec4 *uv,
-				  unsigned count) = 0;
+				  unsigned count);
 
 	/**
 	 * Start a new indexed primitive.
@@ -336,8 +340,10 @@ public:
 
 	/**
 	 * End an index primitive previously started with begin_primitive
+	 *
+	 * The default implementation is a no-op.
 	 */
-	virtual void end_primitive(void) = 0;
+	virtual void end_primitive(void);
 
 	/**
 	 * Buffer storage for vertex data
@@ -378,9 +384,7 @@ public:
  */
 class GLUshapeProducer {
 public:
-	virtual ~GLUshapeProducer()
-	{
-	}
+	virtual ~GLUshapeProducer();
 
 	/**
 	 * Select the orientation of generated normals
