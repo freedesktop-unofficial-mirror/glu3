@@ -24,7 +24,7 @@ AM_CXXFLAGS=-I../include
 AM_CFLAGS=-I../include
 
 lib_LIBRARIES = libGLU3.a
-libGLU3_a_SOURCES = matrix.c load_text.c arcball.c revolve.c mesh.c \
+libGLU3_a_SOURCES = matrix.c load_text.c arcball.c revolve.c mesh.cpp \
 	sphere.cpp cube.cpp shader.c mesh.h revolve.h system.h \
 	buffer.c buffer.h shape.cpp
 
