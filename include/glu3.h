@@ -327,9 +327,12 @@ public:
 	virtual void begin_primitive(GLenum mode, unsigned count) = 0;
 
 	/**
-	 * Emit an element index for drawing
+	 * Emit a batch of element indices for drawing
+	 *
+	 * \param idx    Vertex indices.
+	 * \param count  Number of indices being emitted. 
 	 */
-	virtual void index(unsigned idx) = 0;
+	virtual void index_batch(const unsigned *idx, unsigned count) = 0;
 
 	/**
 	 * End an index primitive previously started with begin_primitive

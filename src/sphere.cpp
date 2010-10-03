@@ -36,7 +36,7 @@ static void sphere_revolve_cb(void *data,
 
 static void sphere_begin_cb(void *data, GLenum mode, unsigned count);
 
-static void sphere_index_cb(void *data, unsigned index);
+static void sphere_index_cb(void *data, const unsigned *index, unsigned count);
 
 static void sphere_end_cb(void *data);
 /*@}*/
@@ -132,11 +132,11 @@ sphere_begin_cb(void *data, GLenum mode, unsigned count)
 
 
 static void
-sphere_index_cb(void *data, unsigned index)
+sphere_index_cb(void *data, const unsigned *index, unsigned count)
 {
 	GLUconsumerFriend *c = (GLUconsumerFriend *) data;
 
-	c->index(index);
+	c->index_batch(index, count);
 }
 
 

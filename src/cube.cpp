@@ -80,7 +80,7 @@ GLUcubeProducer::generate(GLUshapeConsumer *consumer) const
 #define V(x, y, z, n) (((((z) * 4) + (y * 2) + x) * 3) + (n))
 	
 
-	static const unsigned char elts[] = {
+	static const unsigned elts[] = {
 		/* +X face */
 		V(P, P, P, X), V(P, N, N, X), V(P, P, N, X),
 		V(P, P, P, X), V(P, N, P, X), V(P, N, N, X),
@@ -184,9 +184,6 @@ GLUcubeProducer::generate(GLUshapeConsumer *consumer) const
 	}
 
 	consumer->begin_primitive(GL_TRIANGLES, Elements(elts));
-
-	for (unsigned i = 0; i < Elements(elts); i++)
-		consumer->index(elts[i]);
-	
+	consumer->index_batch(elts, Elements(elts));
 	consumer->end_primitive();
 }

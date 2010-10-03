@@ -28,7 +28,7 @@ extern "C" {
 #endif
 
 typedef void (mesh_begin_cb)(void *data, GLenum mode, unsigned count);
-typedef void (mesh_index_cb)(void *data, unsigned index);
+typedef void (mesh_index_cb)(void *data, const unsigned *index, unsigned count);
 typedef void (mesh_end_cb)(void *data);
 
 /**

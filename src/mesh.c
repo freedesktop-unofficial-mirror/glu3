@@ -23,6 +23,18 @@
 
 #include "mesh.h"
 
+#define Elements(a)  (sizeof(a) / sizeof(a[0]))
+
+#define EMIT_ELT(e)					\
+	do {						\
+		elts[count] = (e);			\
+		count++;				\
+		if (count >= Elements(elts)) {		\
+			(*index_cb)(data, elts, count);	\
+			count = 0;			\
+		}					\
+	} while (0)
+
 void
 generate_triangle_mesh(unsigned rows, unsigned cols, unsigned width, 
 		       mesh_begin_cb *begin_cb, 
@@ -30,32 +42,38 @@ generate_triangle_mesh(unsigned rows, unsigned cols, unsigned width,
 		       mesh_end_cb *end_cb, 
 		       void *data)
 {
-	int i;
+	unsigned elts[64];
+	unsigned count = 0;
+	unsigned i;
 	int j;
 
 	(*begin_cb)(data, GL_TRIANGLE_STRIP, rows * ((2 * cols) + 1));
 	for (i = 0; i < rows; i++) {
 		if ((i & 1) == 0) {
-			for (j = 0; j < cols; j++) {
+			for (j = 0; j < (int)cols; j++) {
 				const unsigned e0 = ((i + 0) * width) + j;
 				const unsigned e1 = ((i + 1) * width) + j;
 
-				(*index_cb)(data, e0);
-				(*index_cb)(data, e1);
+				EMIT_ELT(e0);
+				EMIT_ELT(e1);
 			}
 
-			(*index_cb)(data, (width - 1) + ((i + 0) * width));
+			EMIT_ELT((width - 1) + ((i + 0) * width));
 		} else {
 			for (j = cols - 1; j >= 0; j--) {
 				const unsigned e0 = ((i + 0) * width) + j;
 				const unsigned e1 = ((i + 1) * width) + j;
 
-				(*index_cb)(data, e0);
-				(*index_cb)(data, e1);
+				EMIT_ELT(e0);
+				EMIT_ELT(e1);
 			}
 
-			(*index_cb)(data, (i + 0) * width);
+			EMIT_ELT((i + 0) * width);
 		}
 	}
+
+	if (count != 0)
+		(*index_cb)(data, elts, count);
+
 	(*end_cb)(data);
 }
