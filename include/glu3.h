@@ -388,7 +388,10 @@ public:
 	 * \param outside  Set to true if normals should point towards the
 	 *                 outside of the object.
 	 */
-	void orientation(bool outside);
+	inline void orientation(bool outside)
+	{
+		this->normals_point_out = outside;
+	}
 
 	/**
 	 * Get the number of vertices in the shape
