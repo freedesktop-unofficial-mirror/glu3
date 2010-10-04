@@ -72,7 +72,7 @@ GLUmeshProducer::generate(GLUshapeConsumer *consumer) const
 				EMIT_ELT(e1);
 			}
 
-			EMIT_ELT((this->width - 1) + ((i + 0) * this->width));
+			EMIT_ELT((this->columns - 1) + ((i + 1) * this->width));
 		} else {
 			for (j = this->columns - 1; j >= 0; j--) {
 				const unsigned e0 = ((i + 0) * this->width) + j;
@@ -82,7 +82,7 @@ GLUmeshProducer::generate(GLUshapeConsumer *consumer) const
 				EMIT_ELT(e1);
 			}
 
-			EMIT_ELT((i + 0) * this->width);
+			EMIT_ELT((i + 1) * this->width);
 		}
 	}
 
