@@ -454,7 +454,7 @@ public:
 	/**
 	 * Construct a new mesh shape generator
 	 *
-	 * \param rows    Number of rows in the mesh
+	 * \param rows    Number of polygon (not vertex) rows in the mesh
 	 * \param columns Number of columns in the mesh
 	 * \param width   Total width of the underlying mesh
 	 */
@@ -468,6 +468,8 @@ public:
 	virtual unsigned element_count(void) const;
 	virtual unsigned primitive_count(void) const;
 	virtual void generate(GLUshapeConsumer *consumer) const;
+
+	void generate(GLUshapeConsumer *consumer, unsigned base_vertex) const;
 
 protected:
 	unsigned rows;

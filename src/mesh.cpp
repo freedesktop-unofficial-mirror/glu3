@@ -45,7 +45,7 @@ GLUmeshProducer::primitive_count(void) const
 
 #define EMIT_ELT(e)						\
 	do {							\
-		elts[count] = (e);				\
+		elts[count] = (e) + base_vertex;		\
 		count++;					\
 		if (count >= Elements(elts)) {			\
 			consumer->index_batch(elts, count);	\
@@ -54,7 +54,8 @@ GLUmeshProducer::primitive_count(void) const
 	} while (0)
 
 void
-GLUmeshProducer::generate(GLUshapeConsumer *consumer) const
+GLUmeshProducer::generate(GLUshapeConsumer *consumer,
+			  unsigned base_vertex) const
 {
 	unsigned elts[64];
 	unsigned count = 0;
@@ -90,4 +91,10 @@ GLUmeshProducer::generate(GLUshapeConsumer *consumer) const
 		consumer->index_batch(elts, count);
 
 	consumer->end_primitive();
+}
+
+void
+GLUmeshProducer::generate(GLUshapeConsumer *consumer) const
+{
+	this->generate(consumer, 0);
 }
