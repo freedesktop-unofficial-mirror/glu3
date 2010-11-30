@@ -34,7 +34,7 @@ GLUmeshProducer::vertex_count(void) const
 unsigned
 GLUmeshProducer::element_count(void) const
 {
-	return this->rows * (2 * (this->columns + 1));
+	return this->rows * ((2 * this->columns) + 1);
 }
 
 unsigned
