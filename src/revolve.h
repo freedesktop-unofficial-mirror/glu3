@@ -69,6 +69,11 @@ generate_sphere(double radius, unsigned slices, unsigned stacks,
 		bool normals_point_out, revolve_cb *cb, void *data,
 		struct cb_buffer *buf);
 
+extern void
+generate_torus(double tube_radius, double path_radius,
+	       unsigned sides, unsigned rings, bool normals_point_out,
+	       revolve_cb *cb, void *data, struct cb_buffer *buf);
+
 #ifdef __cplusplus
 };
 #endif

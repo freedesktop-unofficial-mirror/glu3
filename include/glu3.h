@@ -504,6 +504,35 @@ private:
 
 
 /**
+ * Shape generator that generates a torus.
+ */
+class GLUtorusProducer : public GLUmeshProducer {
+public:
+	/**
+	 * Construct a new torus shape generator
+	 *
+	 * \param tube_radius  Specifies the radius of the "solid" part of the
+	 *                     torus.
+	 * \param path_radius  Specifies the distance from the center of the
+	 *                     "hole" to the center of the solid part.
+	 * \param sides        Specifies the number of subdivisions around each
+	 *                     ring.
+	 * \param rings        Specifies the number of subdivisions along the
+	 *                     path.  These are roughly analogous the longitude
+	 *                     lines on a globe.
+	 */
+	GLUtorusProducer(double tube_radius, double path_radius,
+			 unsigned sides, unsigned rings);
+	virtual unsigned vertex_count(void) const;
+	virtual void generate(GLUshapeConsumer *consumer) const;
+
+private:
+	double tube_radius;
+	double path_radius;
+};
+
+
+/**
  * Shape generator that generates a cube.
  */
 class GLUcubeProducer : public GLUshapeProducer {

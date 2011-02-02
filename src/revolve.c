@@ -126,3 +126,52 @@ generate_sphere(double radius, unsigned slices, unsigned stacks,
 	revolve(positions, normals, u, stacks + 1, & y_axis,
 		slices + 1, 2.0 * M_PI, 0.0, cb, data, buf);
 }
+
+
+void
+generate_torus(double tube_radius, double path_radius,
+	       unsigned sides, unsigned rings, _Bool normals_point_out,
+	       revolve_cb *cb, void *data, struct cb_buffer *buf)
+{
+	const GLUvec4 y_axis = {{ 0.0, 1.0, 0.0, 0.0 }};
+	GLUvec4 *positions;
+	GLUvec4 *normals;
+	float *u;
+	double angle_step;
+	unsigned i;
+
+	positions = (GLUvec4 *) malloc((2 * sizeof(GLUvec4) + sizeof(float))
+				       * (sides + 1));
+	normals = positions + (sides + 1);
+	u = (float *)(normals + (sides + 1));
+
+	angle_step = 2.0 * M_PI / (double)(sides);
+	for (i = 0; i < (sides + 1); i++) {
+		const double angle = angle_step * i;
+
+		normals[i].values[0] = sin(angle);
+		normals[i].values[1] = cos(angle);
+		normals[i].values[2] = 0.0;
+		normals[i].values[3] = 0.0;
+
+		gluMult4v_f(& positions[i],
+			    & normals[i],
+			    tube_radius);
+		positions[i].values[3] = 1.0;
+		positions[i].values[0] += path_radius;
+
+		u[i] = (float) i / (float) sides;
+
+		if (!normals_point_out) {
+			normals[i].values[0] = -normals[i].values[0];
+			normals[i].values[1] = -normals[i].values[1];
+		}
+	}
+
+	/* Note the rotation is *from* 2pi *to* 0.  The counter-clockwise
+	 * rotation ensures that the vertices are generated in the correct
+	 * order to be drawn using triangle strips with back-face culling.
+	 */
+	revolve(positions, normals, u, sides + 1, & y_axis,
+		rings + 1, 2.0 * M_PI, 0.0, cb, data, buf);
+}
