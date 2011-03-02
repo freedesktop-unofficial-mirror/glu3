@@ -27,7 +27,7 @@
 #ifdef _MSC_VER
 # define INLINE __forceinline
 #elif defined(__GNUC_GNU_INLINE__) || defined(__GNUC_STDC_INLINE__)
-# define INLINE inline __attribute__((gnu_inline))
+# define INLINE inline __attribute__((gnu_inline, always_inline))
 #else
 # define INLINE inline
 #endif
